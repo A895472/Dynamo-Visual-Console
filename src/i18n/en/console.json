@@ -120,7 +120,7 @@
 		"envBase": "Base environment (AWS)",
 		"envReadonly": "Read-only (disable writes)",
 		"envReadonlyBadge": "Read-only",
-		"envActive": "Session active",
+		"envActive": "Credentials saved",
 		"envLabel": "Dropdown label",
 		"envCredsSubtitle": "Stored in the browser (localStorage).",
 		"envCredsTitle": "AWS credentials",

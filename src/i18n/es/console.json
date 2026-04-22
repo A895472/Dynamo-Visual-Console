@@ -120,7 +120,7 @@
 		"envBase": "Entorno base (AWS)",
 		"envReadonly": "Solo lectura (deshabilitar escritura)",
 		"envReadonlyBadge": "Solo lectura",
-		"envActive": "Sesión activa",
+		"envActive": "Credenciales guardadas",
 		"envLabel": "Nombre en el desplegable",
 		"envCredsSubtitle": "Se guardan en el navegador (localStorage).",
 		"envCredsTitle": "Credenciales AWS",
