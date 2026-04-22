@@ -18,12 +18,12 @@ const confirmMutation = (environment: string, actionLabel: string) => {
 const createNewItem = () => JSON.stringify({ id: `item-${Date.now()}`, enabled: true }, null, 2)
 const PRIORITY_EDITOR_KEYS = ['id', 'destino', 'json_rule']
 
-const orderItemForEditor = (item: ConsoleItem): ConsoleItem => {
-	const baseId = String(item.id ?? '')
-	const ordered: ConsoleItem = { id: baseId }
+const orderItemForEditor = (item: ConsoleItem, pkField: string): ConsoleItem => {
+	const pkValue = String(item[pkField] ?? '')
+	const ordered: Record<string, unknown> = { [pkField]: pkValue }
 
 	for (const key of PRIORITY_EDITOR_KEYS) {
-		if (key === 'id') {
+		if (key === pkField) {
 			continue
 		}
 		if (key in item) {
@@ -32,13 +32,13 @@ const orderItemForEditor = (item: ConsoleItem): ConsoleItem => {
 	}
 
 	for (const key of Object.keys(item)) {
-		if (PRIORITY_EDITOR_KEYS.includes(key)) {
+		if (key === pkField || PRIORITY_EDITOR_KEYS.includes(key)) {
 			continue
 		}
 		ordered[key] = item[key]
 	}
 
-	return ordered
+	return ordered as ConsoleItem
 }
 
 const sanitizeRuleJsonForStorage = (value: unknown): unknown => {
@@ -124,7 +124,7 @@ export function Tables() {
 	const [selectedTableName, setSelectedTableName] = useState(settings.defaultTableName)
 	const [items, setItems] = useState<ConsoleItem[]>([])
 	const [selectedItemId, setSelectedItemId] = useState('')
-	const [editorValue, setEditorValue] = useState(createNewItem())
+	const [editorValue, setEditorValue] = useState('')
 	const [decodedValue, setDecodedValue] = useState('')
 	const [decodedItemId, setDecodedItemId] = useState('')
 	const [decodedDirty, setDecodedDirty] = useState(false)
@@ -183,7 +183,9 @@ export function Tables() {
 					return
 				}
 
-				const exists = nextItems.some((item) => String(item.id) === selectedItemId)
+				const exists = nextItems.some(
+					(item) => String(item[tableKeys.partitionKey]) === selectedItemId
+				)
 				if (!exists && selectedItemId) {
 					setSelectedItemId('')
 				}
@@ -192,6 +194,52 @@ export function Tables() {
 				setIsLoadingItems(false)
 			})
 	}, [environment, selectedTableName])
+
+	// Atributos que tienen otros items de la tabla pero que el item en edición no tiene
+	const selectedTable = tables.find((t) => t.name === selectedTableName)
+	const tableKeys = {
+		partitionKey: selectedTable?.partitionKey ?? 'id',
+		sortKey: selectedTable?.sortKey,
+	}
+
+	const suggestedAttributes: string[] = (() => {
+		if (!editorValue) return []
+		try {
+			const current = JSON.parse(editorValue) as Record<string, unknown>
+			const currentKeys = new Set(Object.keys(current))
+			const keyFields = new Set(
+				[tableKeys.partitionKey, tableKeys.sortKey].filter(Boolean) as string[]
+			)
+			const PREDEFINED = [
+				'responsable_solicitud',
+				'fecha_creacion',
+				'fecha_modificacion',
+				'descripcion',
+			]
+			const fromItems = items.flatMap((item) => Object.keys(item))
+			const allKeys = Array.from(new Set([...PREDEFINED, ...fromItems]))
+			return allKeys.filter((k) => !currentKeys.has(k) && !keyFields.has(k))
+		} catch {
+			return []
+		}
+	})()
+
+	const handleAddAttribute = (attrName: string, attrValue: string) => {
+		if (!editorValue) return
+		try {
+			const parsed = JSON.parse(editorValue) as ConsoleItem
+			let nextValue: unknown = attrValue
+			try {
+				nextValue = JSON.parse(attrValue)
+			} catch {
+				/* keep string */
+			}
+			const nextItem: ConsoleItem = { ...parsed, [attrName]: nextValue }
+			setEditorValue(JSON.stringify(orderItemForEditor(nextItem, tableKeys.partitionKey), null, 2))
+		} catch {
+			/* ignore */
+		}
+	}
 
 	const parseEditorItem = (): ConsoleItem | null => {
 		try {
@@ -250,16 +298,17 @@ export function Tables() {
 
 	const selectItemInEditor = (item: ConsoleItem) => {
 		setErrorMessage('')
-		setSelectedItemId(String(item.id ?? ''))
-		const ordered = orderItemForEditor(item)
+		const pkVal = String(item[tableKeys.partitionKey] ?? `__pk_${Date.now()}__`)
+		setSelectedItemId(pkVal)
+		const ordered = orderItemForEditor(item, tableKeys.partitionKey)
 		setEditorValue(JSON.stringify(ordered, null, 2))
 		setDecodedValue('')
 		setDecodedItemId('')
 		setDecodedDirty(false)
 		if (typeof ordered.json_rule === 'string' && ordered.json_rule.trim().length > 0) {
-			void decodeFromJsonRuleString(ordered.json_rule, String(item.id ?? 'editor'), false)
+			void decodeFromJsonRuleString(ordered.json_rule, pkVal, false)
 		}
-		setSuccessMessage(`Item ${String(item.id ?? 'sin-id')} cargado en el editor.`)
+		setSuccessMessage(`Item ${pkVal} cargado en el editor.`)
 	}
 
 	const handleSaveItem = async () => {
@@ -330,11 +379,13 @@ export function Tables() {
 
 		try {
 			const decoded = await consoleApi.decodeRule(environment, ruleJson)
-			setDecodedItemId(String(item.id ?? 'editor'))
+			setDecodedItemId(String(item[tableKeys.partitionKey] ?? 'editor'))
 			setDecodedValue(decoded)
 			setEncodeExpression(decoded)
 			setDecodedDirty(false)
-			setSuccessMessage(`Item ${String(item.id ?? 'sin-id')} descodificado correctamente.`)
+			setSuccessMessage(
+				`Item ${String(item[tableKeys.partitionKey] ?? 'sin-id')} descodificado correctamente.`
+			)
 		} catch (error) {
 			setErrorMessage(
 				error instanceof Error ? error.message : 'No se pudo descodificar la regla del item.'
@@ -380,7 +431,7 @@ export function Tables() {
 			expression: expression.trim(),
 			ruleName: typeof parsed.name === 'string' ? parsed.name : undefined,
 			description: typeof parsed.description === 'string' ? parsed.description : undefined,
-			environment,
+			environment: environment as import('@/models/console').TargetEnvironment,
 		})
 
 		const cleanedRuleJson = sanitizeRuleJsonForStorage(encoded.ruleJson)
@@ -392,8 +443,8 @@ export function Tables() {
 		delete nextItem.expression
 		delete nextItem.ruleJson
 
-		setEditorValue(JSON.stringify(orderItemForEditor(nextItem), null, 2))
-		setDecodedItemId(String(nextItem.id ?? selectedItemId ?? 'editor'))
+		setEditorValue(JSON.stringify(orderItemForEditor(nextItem, tableKeys.partitionKey), null, 2))
+		setDecodedItemId(String(nextItem[tableKeys.partitionKey] ?? selectedItemId ?? 'editor'))
 		setDecodedDirty(false)
 	}
 
@@ -451,10 +502,12 @@ export function Tables() {
 			setAutoEncodeEnabled(true)
 			setDecodedValue(value)
 			setDecodedDirty(true)
-			setDecodedItemId(String(parsed.id ?? selectedItemId ?? 'editor'))
+			setDecodedItemId(String(parsed[tableKeys.partitionKey] ?? selectedItemId ?? 'editor'))
 			if (!value.trim()) {
 				const nextItem: ConsoleItem = { ...parsed, json_rule: '' }
-				setEditorValue(JSON.stringify(orderItemForEditor(nextItem), null, 2))
+				setEditorValue(
+					JSON.stringify(orderItemForEditor(nextItem, tableKeys.partitionKey), null, 2)
+				)
 				setDecodedDirty(false)
 			}
 			return
@@ -483,8 +536,8 @@ export function Tables() {
 			[field]: nextValue,
 		}
 
-		setEditorValue(JSON.stringify(orderItemForEditor(nextItem), null, 2))
-		if (field === 'id') {
+		setEditorValue(JSON.stringify(orderItemForEditor(nextItem, tableKeys.partitionKey), null, 2))
+		if (field === tableKeys.partitionKey) {
 			setSelectedItemId(String(nextValue))
 			if (decodedValue) {
 				setDecodedItemId(String(nextValue))
@@ -541,7 +594,7 @@ export function Tables() {
 
 	const handleNewItem = () => {
 		setAutoEncodeEnabled(false)
-		setSelectedItemId('')
+		setSelectedItemId('__new__')
 		setDecodedValue('')
 		setDecodedItemId('')
 		setDecodedDirty(false)
@@ -581,6 +634,7 @@ export function Tables() {
 			selectedItemId={selectedItemId}
 			editorValue={editorValue}
 			structuredFields={structuredFields}
+			tableKeys={tableKeys}
 			decodedValue={decodedValue}
 			decodedItemId={decodedItemId}
 			decodedDirty={decodedDirty}
@@ -622,6 +676,8 @@ export function Tables() {
 				void handleDeleteItem(itemId)
 			}}
 			onNewItem={handleNewItem}
+			suggestedAttributes={suggestedAttributes}
+			onAddAttribute={handleAddAttribute}
 		/>
 	)
 }

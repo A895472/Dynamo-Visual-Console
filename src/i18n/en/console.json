@@ -76,7 +76,16 @@
 		"filterCount": "{{shown}} of {{total}}",
 		"filterEmpty": "No items match the current filter.",
 		"itemCreatedAt": "Created: {{value}}",
-		"itemUpdatedAt": "Modified: {{value}}"
+		"itemUpdatedAt": "Modified: {{value}}",
+		"editorEmpty": "Select an item from the list to edit it.",
+		"addAttr": "Add attribute",
+		"addAttrTitle": "Add attribute to item",
+		"addAttrName": "Attribute name",
+		"addAttrValue": "Value (text, number, JSON...)",
+		"addAttrConfirm": "Add",
+		"noKey": "no key",
+		"partitionKeyTooltip": "Partition key (PK) — cannot be modified",
+		"sortKeyTooltip": "Sort key (SK) — cannot be modified"
 	},
 	"converter": {
 		"title": "Converter and reverse converter",

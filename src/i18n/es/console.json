@@ -76,7 +76,16 @@
 		"filterCount": "{{shown}} de {{total}}",
 		"filterEmpty": "Sin resultados para este filtro.",
 		"itemCreatedAt": "Creado: {{value}}",
-		"itemUpdatedAt": "Modificado: {{value}}"
+		"itemUpdatedAt": "Modificado: {{value}}",
+		"editorEmpty": "Selecciona un item de la lista para editarlo.",
+		"addAttr": "Añadir atributo",
+		"addAttrTitle": "Añadir atributo al item",
+		"addAttrName": "Nombre del atributo",
+		"addAttrValue": "Valor (texto, número, JSON...)",
+		"addAttrConfirm": "Añadir",
+		"noKey": "sin clave",
+		"partitionKeyTooltip": "Clave de partición (PK) — no se puede modificar",
+		"sortKeyTooltip": "Clave de ordenación (SK) — no se puede modificar"
 	},
 	"converter": {
 		"title": "Convertidor y desconvertidor",

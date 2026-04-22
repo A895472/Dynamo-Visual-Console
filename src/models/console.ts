@@ -24,7 +24,7 @@ export interface ConsoleTableSummary {
 }
 
 export interface ConsoleItem {
-	id: string
+	id?: string
 	[key: string]: unknown
 }
 

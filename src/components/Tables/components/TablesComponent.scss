@@ -106,6 +106,90 @@
 	padding-right: 0.2rem;
 }
 
+.tables-label__key-name {
+	display: flex;
+	align-items: center;
+	gap: 0.3rem;
+}
+
+.tables-key-badge {
+	font-size: 0.78rem;
+	cursor: help;
+}
+
+.tables-field--disabled {
+	opacity: 0.55;
+	cursor: not-allowed !important;
+	background: color-mix(in srgb, var(--panel-strong) 60%, var(--border)) !important;
+}
+
+.tables-editor-empty {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 120px;
+	color: var(--muted);
+	font-size: 0.92rem;
+}
+
+.tables-button--add-attr {
+	width: 100%;
+	margin-bottom: 0.75rem;
+	border-style: dashed;
+	color: var(--accent);
+	border-color: var(--accent);
+	background: transparent;
+
+	&:hover {
+		background: color-mix(in srgb, var(--accent) 8%, transparent);
+	}
+}
+
+.tables-add-attr-panel {
+	border: 1px solid var(--border);
+	border-radius: 14px;
+	padding: 0.85rem;
+	margin-bottom: 0.75rem;
+	background: var(--panel-strong);
+	display: grid;
+	gap: 0.65rem;
+}
+
+.tables-add-attr-panel__title {
+	font-size: 0.88rem;
+	font-weight: 600;
+	color: var(--fg);
+}
+
+.tables-add-attr-suggestions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.4rem;
+}
+
+.tables-add-attr-chip {
+	border: 1px solid var(--border);
+	border-radius: 20px;
+	padding: 0.28rem 0.7rem;
+	font: inherit;
+	font-size: 0.8rem;
+	cursor: pointer;
+	background: var(--panel);
+	color: var(--fg);
+	transition: background 0.14s ease, border-color 0.14s ease;
+
+	&:hover {
+		border-color: var(--accent);
+		background: color-mix(in srgb, var(--accent) 10%, transparent);
+		color: var(--accent);
+	}
+}
+
+.tables-add-attr-fields {
+	display: grid;
+	gap: 0.5rem;
+}
+
 .tables-item-card {
 	border: 1px solid var(--border);
 	border-radius: 15px;
