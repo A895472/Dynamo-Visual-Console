@@ -1,9 +1,14 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import type { AwsCredentials, ConsoleSettings, CustomEnvironment } from '@/models/console'
-import { consoleApi } from '@/services/console/api'
+import type {
+	AwsCredentials,
+	ConsoleSettings,
+	ConsoleTableSummary,
+	CustomEnvironment,
+} from '@/models/console'
 import {
 	clearEnvCredentials,
+	consoleApi,
 	readEnvCredentials,
 	writeEnvCredentials,
 } from '@/services/console/api'
@@ -13,6 +18,14 @@ import SettingsComponent from '../components/SettingsComponent'
 export function Settings() {
 	const [settings, setSettings] = useState<ConsoleSettings>(consoleApi.readSettings())
 	const [feedback, setFeedback] = useState('')
+	const [availableTables, setAvailableTables] = useState<ConsoleTableSummary[]>([])
+
+	useEffect(() => {
+		void consoleApi
+			.listTables(settings.environment)
+			.then(setAvailableTables)
+			.catch(() => {})
+	}, [settings.environment])
 
 	const handleSave = () => {
 		consoleApi.writeSettings(settings)
@@ -79,6 +92,7 @@ export function Settings() {
 		<SettingsComponent
 			settings={settings}
 			feedback={feedback}
+			availableTables={availableTables}
 			onChange={setSettings}
 			onSave={handleSave}
 			onSaveEnvCredentials={handleSaveEnvCredentials}

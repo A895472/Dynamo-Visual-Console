@@ -177,3 +177,40 @@
 	font-size: 0.8rem;
 	color: var(--danger);
 }
+
+// ── Table combobox ────────────────────────────────────────────────────────────
+.settings-combobox {
+	position: relative;
+}
+
+.settings-combobox__list {
+	position: absolute;
+	top: calc(100% + 4px);
+	left: 0;
+	right: 0;
+	z-index: 100;
+	margin: 0;
+	padding: 0.4rem 0;
+	list-style: none;
+	background: var(--panel-strong);
+	border: 1px solid var(--border);
+	border-radius: 16px;
+	box-shadow: 0 8px 24px color-mix(in srgb, var(--fg) 10%, transparent);
+	max-height: 220px;
+	overflow-y: auto;
+}
+
+.settings-combobox__option {
+	padding: 0.65rem 1rem;
+	cursor: pointer;
+	font-size: 0.92rem;
+
+	&:hover {
+		background: color-mix(in srgb, var(--accent) 8%, transparent);
+	}
+
+	&--active {
+		color: var(--accent);
+		font-weight: 600;
+	}
+}

@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import type {
 	AwsCredentials,
 	ConsoleSettings,
+	ConsoleTableSummary,
 	CustomEnvironment,
 	TargetEnvironment,
 } from '@/models/console'
@@ -18,6 +19,7 @@ const IS_REMOTE_MODE = (import.meta.env.VITE_APP_MODE ?? 'local') === 'remote'
 interface Props {
 	settings: ConsoleSettings
 	feedback: string
+	availableTables: ConsoleTableSummary[]
 	onChange: (settings: ConsoleSettings) => void
 	onSave: () => void
 	onSaveEnvCredentials: (id: string, creds: AwsCredentials) => void
@@ -67,11 +69,80 @@ function Pill({ label, variant }: { label: string; variant: PillVariant }) {
 	)
 }
 
+// ── Combobox de tabla (filtra por cualquier parte del texto) ─────────────────
+function TableCombobox({
+	value,
+	tables,
+	onChange,
+}: {
+	value: string
+	tables: ConsoleTableSummary[]
+	onChange: (v: string) => void
+}) {
+	const [open, setOpen] = useState(false)
+	const [query, setQuery] = useState(value)
+	const wrapRef = useRef<HTMLDivElement>(null)
+
+	// Sincronizar query cuando value cambia desde fuera
+	useEffect(() => {
+		setQuery(value)
+	}, [value])
+
+	// Cerrar al hacer click fuera
+	useEffect(() => {
+		const handler = (e: MouseEvent) => {
+			if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) {
+				setOpen(false)
+			}
+		}
+		document.addEventListener('mousedown', handler)
+		return () => document.removeEventListener('mousedown', handler)
+	}, [])
+
+	const filtered = query.trim()
+		? tables.filter((t) => t.name.toLowerCase().includes(query.trim().toLowerCase()))
+		: tables
+
+	return (
+		<div ref={wrapRef} className='settings-combobox'>
+			<input
+				className='console-input'
+				value={query}
+				placeholder='—'
+				onFocus={() => setOpen(true)}
+				onChange={(e) => {
+					setQuery(e.target.value)
+					onChange(e.target.value)
+					setOpen(true)
+				}}
+			/>
+			{open && filtered.length > 0 && (
+				<ul className='settings-combobox__list'>
+					{filtered.map((t) => (
+						<li
+							key={t.name}
+							className={`settings-combobox__option${t.name === value ? ' settings-combobox__option--active' : ''}`}
+							onMouseDown={(e) => {
+								e.preventDefault()
+								onChange(t.name)
+								setQuery(t.name)
+								setOpen(false)
+							}}>
+							{t.name}
+						</li>
+					))}
+				</ul>
+			)}
+		</div>
+	)
+}
+
 // ── Componente principal ──────────────────────────────────────────────────────
 export default function SettingsComponent(props: Props) {
 	const {
 		settings,
 		feedback,
+		availableTables,
 		onChange,
 		onSave,
 		onSaveEnvCredentials,
@@ -250,10 +321,10 @@ export default function SettingsComponent(props: Props) {
 
 						<label className='console-label'>
 							<span>{t('settings.defaultTable')}</span>
-							<input
-								className='console-input'
+							<TableCombobox
 								value={settings.defaultTableName}
-								onChange={(e) => onChange({ ...settings, defaultTableName: e.target.value })}
+								tables={availableTables}
+								onChange={(v) => onChange({ ...settings, defaultTableName: v })}
 							/>
 						</label>
 					</div>
