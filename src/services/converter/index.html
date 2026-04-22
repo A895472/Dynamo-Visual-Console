@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Convertidor de Reglas Json</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230073e6'/%3E%3Ctext x='32' y='44' font-family='monospace' font-size='30' font-weight='bold' fill='white' text-anchor='middle'%3E%7B%7D%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-content">
+      <div class="header-title">
+        <div class="logo-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+        </div>
+        <h1>Convertidor de Reglas <span class="brand-accent">JSON</span></h1>
+      </div>
+      <nav class="header-nav">
+        <button class="nav-tab active" data-tab="converter">Convertidor</button>
+        <button class="nav-tab" data-tab="import">Importar JSON</button>
+        <button class="nav-tab" data-tab="history">Historial</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <!-- ═══ Converter Tab ═══ -->
+    <div id="tab-converter" class="tab-content active">
+      <div class="converter-layout">
+        <!-- Input Panel -->
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title"><span class="icon">&#9998;</span> Regla en Texto</span>
+            <button class="btn btn-sm btn-secondary" id="btnClear">Limpiar</button>
+          </div>
+          <div class="panel-body">
+            <div class="autocomplete-wrapper">
+              <textarea 
+                id="ruleInput" 
+                class="rule-input" 
+                placeholder="Escribe tu regla aquí...&#10;&#10;Ejemplo:&#10;payload.mensaje.envio.codaplicacion = 1 AND payload.mensaje.envio.eventosenvio.evento.codevento IN ('AA','BA')&#10;&#10;Ctrl+Enter para convertir"
+                spellcheck="false"
+              ></textarea>
+              <div id="autocomplete" class="autocomplete-dropdown"></div>
+            </div>
+
+            <div id="errorBox" class="error-box">
+              <div class="error-title"></div>
+              <div class="error-detail"></div>
+              <div class="error-indicator"></div>
+            </div>
+
+            <div id="successBox" class="success-box"></div>
+
+            <div class="actions-bar">
+              <button class="btn btn-primary" id="btnConvert">&#9654; Convertir a JSON</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Output Panel -->
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title"><span class="icon">{ }</span> JSON Generado</span>
+            <div class="output-actions">
+              <button class="btn btn-sm btn-secondary" id="btnCopy" title="Copiar JSON">&#128203; Copiar</button>
+              <button class="btn btn-sm btn-success" id="btnDownload" title="Descargar JSON">&#11015; Descargar</button>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="json-output-wrapper">
+              <pre class="json-output" id="jsonOutput"><div class="json-placeholder">El JSON generado aparecerá aquí</div></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Motor Rules Config Section -->
+      <div class="motor-rules-section">
+        <div class="panel motor-panel">
+          <div class="panel-header">
+            <span class="panel-title"><span class="icon">&#9881;</span> Configuración Motor de Reglas</span>
+            <div class="output-actions">
+              <button class="btn btn-sm btn-secondary" id="btnClearMotor">Limpiar</button>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="motor-grid">
+              <div class="form-group">
+                <label class="form-label" for="motorId">ID de la regla</label>
+                <input type="text" class="form-input" id="motorId" placeholder="Ej: Trazabilidad2">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="motorDestino">Destino</label>
+                <input type="text" class="form-input" id="motorDestino" placeholder="Ej: awir-d-minerva-kin-dst-trazabilidad">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="motorResponsable">Responsable solicitud <small style="opacity:0.5">(Opcional)</small></label>
+                <input type="text" class="form-input" id="motorResponsable" placeholder="Ej: ABEL GARCIA SANCHEZ">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="motorFechaCreacion">Fecha creación <small style="opacity:0.5">(Opcional)</small></label>
+                <input type="text" class="form-input" id="motorFechaCreacion" placeholder="DD-MM-AAAA">
+              </div>
+              <div class="form-group full-width">
+                <label class="form-label" for="motorDescripcion">Descripción <small style="opacity:0.5">(Opcional)</small></label>
+                <input type="text" class="form-input" id="motorDescripcion" placeholder="Ej: Regla envía eventos de la aplicación 1 con evento AA y tipo de producto PEXOF o PQELE a Petra Manifiesto">
+              </div>
+            </div>
+            <div class="actions-bar">
+              <button class="btn btn-primary" id="btnGenerateMotor">&#9654; Generar JSON Motor de Reglas</button>
+            </div>
+            <div id="motorError" class="error-box">
+              <div class="error-title"></div>
+              <div class="error-detail"></div>
+            </div>
+            <div id="motorSuccess" class="success-box"></div>
+          </div>
+        </div>
+
+        <div class="panel motor-panel">
+          <div class="panel-header">
+            <span class="panel-title"><span class="icon">&#128230;</span> JSON Motor de Reglas</span>
+            <div class="output-actions">
+              <button class="btn btn-sm btn-secondary" id="btnCopyMotor" title="Copiar JSON Motor">&#128203; Copiar</button>
+              <button class="btn btn-sm btn-success" id="btnDownloadMotor" title="Descargar JSON Motor">&#11015; Descargar</button>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="json-output-wrapper">
+              <pre class="json-output" id="motorOutput"><div class="json-placeholder">Rellena los campos y genera la regla para el Motor de Reglas</div></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ Import Tab ═══ -->
+    <div id="tab-import" class="tab-content">
+      <div class="import-layout">
+        <!-- Input Panel -->
+        <div class="panel import-input-panel">
+          <div class="panel-header">
+            <span class="panel-title"><span class="icon">&#128229;</span> JSON de Entrada</span>
+            <div class="output-actions">
+              <button class="btn btn-sm btn-secondary" id="btnImportFile">&#128193; Cargar archivo</button>
+              <button class="btn btn-sm btn-secondary" id="btnImportClear">Limpiar</button>
+            </div>
+          </div>
+          <div class="panel-body">
+            <textarea 
+              id="importInput" 
+              class="rule-input" 
+              placeholder='Pega aquí un JSON de regla Dynamo...&#10;&#10;Formato normal:&#10;{&#10;  "name": "...",&#10;  "value": { ... }&#10;}&#10;&#10;Formato escapado:&#10;{\"name\":\"...\",\"value\":{...}}'
+              spellcheck="false"
+            ></textarea>
+            <input type="file" id="fileImport" accept=".json" class="hidden">
+
+            <div id="importError" class="error-box">
+              <div class="error-title"></div>
+              <div class="error-detail"></div>
+            </div>
+            <div id="importSuccess" class="success-box"></div>
+
+            <div class="actions-bar">
+              <button class="btn btn-primary" id="btnImportConvert">&#9654; Convertir a Texto</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Output Panels -->
+        <div class="import-outputs">
+          <!-- JSON Limpio Panel -->
+          <div class="panel" id="importCleanPanel" style="display:none;">
+            <div class="panel-header">
+              <span class="panel-title"><span class="icon">&#10024;</span> JSON Limpio</span>
+              <div class="output-actions">
+                <button class="btn btn-sm btn-secondary" id="btnCopyCleanJson" title="Copiar JSON limpio">&#128203; Copiar</button>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div class="json-output-wrapper">
+                <pre class="json-output" id="importCleanOutput" style="min-height: 80px;"></pre>
+              </div>
+            </div>
+          </div>
+
+          <!-- Regla en Texto Panel -->
+          <div class="panel">
+            <div class="panel-header">
+              <span class="panel-title"><span class="icon">&#128196;</span> Regla en Texto</span>
+              <div class="output-actions">
+                <button class="btn btn-sm btn-secondary" id="btnCopyText" title="Copiar regla en texto">&#128203; Copiar</button>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div class="json-output-wrapper">
+                <pre class="json-output" id="importOutput" style="min-height: 100px;">La expresión de texto aparecerá aquí</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ History Tab ═══ -->
+    <div id="tab-history" class="tab-content">
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title"><span class="icon">&#128338;</span> Historial de Conversiones</span>
+          <button class="btn btn-sm btn-danger" id="btnClearHistory">Limpiar todo</button>
+        </div>
+        <div class="panel-body">
+          <div id="historyList" class="history-list"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="js/bundle.js"></script>
+</body>
+</html>

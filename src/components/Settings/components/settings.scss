@@ -1,0 +1,143 @@
+// ── Pill / badge ──────────────────────────────────────────────────────────────
+.settings-pill {
+	display: inline-flex;
+	align-items: center;
+	font-size: 0.75rem;
+	padding: 0.2rem 0.65rem;
+	border-radius: 999px;
+	white-space: nowrap;
+	line-height: 1.4;
+
+	&[data-variant='accent'] {
+		background: color-mix(in srgb, var(--accent) 12%, var(--panel));
+		color: var(--accent);
+		border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+	}
+
+	&[data-variant='success'] {
+		background: color-mix(in srgb, var(--success) 12%, var(--panel));
+		color: var(--success);
+		border: 1px solid color-mix(in srgb, var(--success) 30%, transparent);
+	}
+
+	&[data-variant='warning'] {
+		background: color-mix(in srgb, var(--warning) 12%, var(--panel));
+		color: var(--warning);
+		border: 1px solid color-mix(in srgb, var(--warning) 30%, transparent);
+	}
+
+	&[data-variant='danger'] {
+		background: color-mix(in srgb, var(--danger) 12%, var(--panel));
+		color: var(--danger);
+		border: 1px solid color-mix(in srgb, var(--danger) 30%, transparent);
+	}
+}
+
+// ── "No env" placeholder ──────────────────────────────────────────────────────
+.settings-no-env {
+	margin: 0;
+	padding: 0.85rem 1rem;
+	border: 1px dashed var(--border);
+	border-radius: 16px;
+}
+
+// ── Env card ──────────────────────────────────────────────────────────────────
+.settings-env-card {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	padding: 1.5rem;
+	border-top: 1px solid var(--border);
+}
+
+// ── Env card header (name + badges) ──────────────────────────────────────────
+.settings-env-header {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	flex-wrap: wrap;
+}
+
+.settings-env-name {
+	flex-grow: 1;
+	font-weight: 700;
+	font-size: 1rem;
+	color: var(--fg);
+
+	&--unnamed {
+		color: var(--muted);
+	}
+}
+
+// ── Env config grid (name + base) ─────────────────────────────────────────────
+// 2-column grid; readonly checkbox always on its own full-width row
+.settings-env-config {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 1rem;
+
+	@media (max-width: 600px) {
+		grid-template-columns: 1fr;
+	}
+}
+
+.settings-env-readonly {
+	grid-column: 1 / -1;	// full width — own row
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.25rem 0;
+	cursor: pointer;
+	font-size: 0.95rem;
+	color: var(--fg);
+
+	input[type='checkbox'] {
+		width: 1rem;
+		height: 1rem;
+		flex-shrink: 0;
+		cursor: pointer;
+	}
+}
+
+// ── Credentials sub-section ───────────────────────────────────────────────────
+.settings-creds-section {
+	padding-top: 0.75rem;
+	border-top: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+}
+
+.settings-creds-title {
+	font-weight: 600;
+	font-size: 0.85rem;
+	margin-bottom: 0.6rem;
+	color: var(--muted);
+}
+
+.settings-session-token {
+	margin-top: 0.5rem;
+}
+
+.settings-session-token__hint {
+	color: var(--muted);
+	font-weight: 400;
+}
+
+.settings-session-token__area {
+	min-height: 64px;
+}
+
+.settings-session-token__area--tall {
+	min-height: 80px;
+}
+
+// ── Bottom action row ─────────────────────────────────────────────────────────
+.settings-actions {
+	display: flex;
+	gap: 0.75rem;
+	flex-wrap: wrap;
+	align-items: center;
+}
+
+.settings-name-required {
+	font-size: 0.8rem;
+	color: var(--danger);
+}

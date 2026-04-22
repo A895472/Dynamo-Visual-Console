@@ -2,6 +2,7 @@
 
 :root {
 	@include theme-light();
+	font-family: 'IBM Plex Sans', 'Segoe UI', sans-serif;
 }
 :root.theme-dark {
 	@include theme-dark();
@@ -15,14 +16,26 @@ body,
 body {
 	background: var(--bg);
 	color: var(--fg);
+	margin: 0;
 	transition:
 		background 0.2s ease,
 		color 0.2s ease;
 }
 
+* {
+	box-sizing: border-box;
+}
+
 .theme-toggle {
 	border: 1px solid var(--border);
-	background: var(--btn-bg);
+	background: var(--panel-strong);
 	border-radius: 12px;
 	padding: 0.4rem 0.6rem;
+}
+
+button,
+input,
+select,
+textarea {
+	font: inherit;
 }

@@ -1,0 +1,203 @@
+@use '@/assets/styles/index' as *;
+
+// ─── Tabs ────────────────────────────────────────────────────────────────────
+
+.converter-tabs {
+	display: flex;
+	gap: 0.25rem;
+	border-bottom: 1px solid var(--border);
+	margin-bottom: 1.5rem;
+}
+
+.converter-tab {
+	border: 0;
+	border-bottom: 2px solid transparent;
+	border-radius: 8px 8px 0 0;
+	padding: 0.7rem 1.2rem;
+	font: inherit;
+	font-weight: 500;
+	font-size: 0.92rem;
+	cursor: pointer;
+	background: transparent;
+	color: var(--muted);
+	transition:
+		color 0.18s ease,
+		border-color 0.18s ease;
+	margin-bottom: -1px;
+}
+
+.converter-tab:hover {
+	color: var(--fg);
+}
+
+.converter-tab--active {
+	color: var(--accent);
+	border-bottom-color: var(--accent);
+	font-weight: 600;
+}
+
+// ─── Textarea + autocomplete wrapper ─────────────────────────────────────────
+
+.converter-textarea-wrap {
+	position: relative;
+}
+
+// ─── Autocomplete dropdown ────────────────────────────────────────────────────
+
+.converter-ac {
+	position: absolute;
+	z-index: 100;
+	top: calc(100% + 2px);
+	left: 0;
+	min-width: 340px;
+	max-width: 98%;
+	background: var(--panel);
+	border: 1px solid var(--border-strong);
+	border-radius: 14px;
+	box-shadow: var(--shadow-lg);
+	overflow: hidden;
+	list-style: none;
+	margin: 0;
+	padding: 0.25rem;
+}
+
+.converter-ac__item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 0.75rem;
+	padding: 0.55rem 0.9rem;
+	border-radius: 10px;
+	cursor: pointer;
+	font-size: 0.88rem;
+	font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace;
+	transition: background 0.12s ease;
+}
+
+.converter-ac__item:hover,
+.converter-ac__item--active {
+	background: color-mix(in srgb, var(--accent) 12%, var(--panel));
+	color: var(--accent);
+}
+
+.converter-ac__type {
+	font-size: 0.74rem;
+	color: var(--muted);
+	flex-shrink: 0;
+}
+
+// ─── Error position indicator ─────────────────────────────────────────────────
+
+.converter-pos {
+	font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace;
+	font-size: 0.84rem;
+	margin-top: 0.6rem;
+	line-height: 1.6;
+	word-break: break-all;
+}
+
+.converter-pos__highlight {
+	background: color-mix(in srgb, var(--danger) 28%, transparent);
+	color: var(--danger);
+	border-radius: 3px;
+	padding: 0 2px;
+	outline: 1px solid color-mix(in srgb, var(--danger) 60%, transparent);
+}
+
+// ─── JSON syntax highlighting ─────────────────────────────────────────────────
+
+.converter-code {
+	min-height: 200px;
+	max-height: 520px;
+	overflow: auto;
+	white-space: pre;
+	font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace;
+	font-size: 0.88rem;
+	line-height: 1.6;
+	background: var(--panel-strong);
+	border: 1px solid var(--border);
+	border-radius: 16px;
+	padding: 0.85rem 1rem;
+	tab-size: 2;
+	margin: 0;
+}
+
+.json-key {
+	color: #6ea6e0;
+}
+
+.json-string {
+	color: #8acf8a;
+}
+
+.json-number {
+	color: #e0a06e;
+}
+
+.json-bool {
+	color: #c58de0;
+}
+
+.json-null {
+	color: var(--muted);
+}
+
+// ─── Motor de Reglas ──────────────────────────────────────────────────────────
+
+.converter-motor-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 0.9rem;
+}
+
+.converter-motor-full {
+	grid-column: 1 / -1;
+}
+
+// ─── History ──────────────────────────────────────────────────────────────────
+
+.converter-history-entry {
+	display: grid;
+	gap: 0.45rem;
+	background: var(--panel-strong);
+	border: 1px solid var(--border);
+	border-radius: 16px;
+	padding: 1rem;
+	transition: border-color 0.18s ease;
+}
+
+.converter-history-entry:hover {
+	border-color: var(--border-strong);
+}
+
+.converter-history-rule {
+	font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace;
+	font-size: 0.84rem;
+	color: var(--muted-strong);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.converter-history-meta {
+	font-size: 0.8rem;
+	color: var(--muted);
+}
+
+.converter-history-actions {
+	display: flex;
+	gap: 0.5rem;
+	margin-top: 0.25rem;
+}
+
+// ─── Responsive ───────────────────────────────────────────────────────────────
+
+@media (max-width: 640px) {
+	.converter-motor-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.converter-motor-full {
+		grid-column: 1;
+	}
+}

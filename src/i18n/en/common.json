@@ -1,4 +1,8 @@
 {
-	"home": "Home",
-	"demo": "Demo"
+  "navigation": {
+    "dashboard": "Dashboard",
+    "tables": "Tables",
+    "converter": "Converter",
+    "settings": "Settings"
+  }
 }

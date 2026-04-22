@@ -1,47 +1,39 @@
 @mixin theme-light {
-	--bg: #ffffff;
-	--fg: #0f172a;
-	--border: #e5e7eb;
-
-	--bg-hover: #e2e2e2;
-	--fg-hover: #273147;
-
-	--success-bg: #00ff22fb;
-
-	--btn-primary-bg: #2563eb;
-	--btn-primary-fg: #ffffff;
-	--btn-primary-bg-hover: #1d4ed8;
-
-	--btn-secondary-bg: #ff0000;
-	--btn-secondary-fg: #ffffff;
-	--btn-secondary-bg-hover: #df0000;
-
-	--card-radius: 12px;
-	--shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.1);
-
-	--spin-duration: 20s;
+	--bg: #f3f0e8;
+	--bg-alt: #ebe5d9;
+	--fg: #142126;
+	--muted: #5f6d74;
+	--muted-strong: #324048;
+	--border: rgba(20, 33, 38, 0.12);
+	--border-strong: rgba(20, 33, 38, 0.22);
+	--panel: rgba(255, 251, 243, 0.9);
+	--panel-strong: rgba(255, 255, 255, 0.78);
+	--accent: #0f766e;
+	--accent-soft: rgba(15, 118, 110, 0.18);
+	--accent-glow: rgba(245, 158, 11, 0.34);
+	--success: #15803d;
+	--warning: #c2410c;
+	--danger: #b42318;
+	--shadow-sm: 0 12px 28px rgba(37, 44, 53, 0.08);
+	--shadow-lg: 0 28px 60px rgba(37, 44, 53, 0.12);
 }
 
 @mixin theme-dark {
-	--bg: #0f172a;
-	--fg: #e5e7eb;
-	--border: #1f2937;
-
-	--bg-hover: #273147;
-	--fg-hover: #e2e2e2;
-
-	--success-bg: #00ff22fb;
-
-	--btn-primary-bg: #3b83f6cb;
-	--btn-primary-fg: #ffffff;
-	--btn-primary-bg-hover: #60a5faa4;
-
-	--btn-secondary-bg: #ff00009f;
-	--btn-secondary-fg: #ffffff;
-	--btn-secondary-bg-hover: #df000091;
-
-	--card-radius: 12px;
-	--shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.35);
-
-	--spin-duration: 12s;
+	--bg: #11181b;
+	--bg-alt: #182126;
+	--fg: #ecf4f5;
+	--muted: #9eb0b8;
+	--muted-strong: #cad7dc;
+	--border: rgba(236, 244, 245, 0.1);
+	--border-strong: rgba(236, 244, 245, 0.18);
+	--panel: rgba(21, 29, 34, 0.9);
+	--panel-strong: rgba(28, 37, 43, 0.95);
+	--accent: #38bdf8;
+	--accent-soft: rgba(56, 189, 248, 0.16);
+	--accent-glow: rgba(16, 185, 129, 0.2);
+	--success: #4ade80;
+	--warning: #fb923c;
+	--danger: #f87171;
+	--shadow-sm: 0 12px 28px rgba(0, 0, 0, 0.3);
+	--shadow-lg: 0 28px 60px rgba(0, 0, 0, 0.38);
 }

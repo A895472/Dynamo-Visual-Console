@@ -1,22 +1,21 @@
 import { createBrowserRouter } from 'react-router-dom'
 
-import { Home } from '@/components/Home/containers/Home'
+import { ConsoleDashboard } from '@/components/Console/containers/ConsoleDashboard'
+import Converter from '@/components/Converter/containers/Converter'
+import { Settings } from '@/components/Settings/containers/Settings'
+import { Tables } from '@/components/Tables/containers/Tables'
 import { IndexLayout } from '@/layouts'
-
-import Demo from '../components/Demo/containers/Demo'
 
 export const router = createBrowserRouter([
 	{
 		path: '/',
 		element: <IndexLayout />,
 		children: [
-			{ index: true, element: <Home /> },
+			{ index: true, element: <ConsoleDashboard /> },
+			{ path: 'tables', element: <Tables /> },
+			{ path: 'converter', element: <Converter /> },
+			{ path: 'settings', element: <Settings /> },
 			// { path: '*', element: <NotFound /> },
 		],
-	},
-	{
-		path: '/demo',
-		element: <IndexLayout layout='minimal' />,
-		children: [{ index: true, element: <Demo /> }],
 	},
 ])

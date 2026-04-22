@@ -1,4 +1,8 @@
 {
-	"home": "Inicio",
-	"demo": "Ejemplo"
+  "navigation": {
+    "dashboard": "Panel",
+    "tables": "Tablas",
+    "converter": "Convertidor",
+    "settings": "Configuración"
+  }
 }

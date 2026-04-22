@@ -19,10 +19,16 @@ export const Header = () => {
 				</Link>
 				<nav className='nav'>
 					<NavLink to='/' end className={({ isActive }) => (isActive ? active : 'link')}>
-						{t('home')}
+						{t('navigation.dashboard')}
 					</NavLink>
-					<NavLink to='/demo' className={({ isActive }) => (isActive ? active : 'link')}>
-						{t('demo')}
+					<NavLink to='/tables' className={({ isActive }) => (isActive ? active : 'link')}>
+						{t('navigation.tables')}
+					</NavLink>
+					<NavLink to='/converter' className={({ isActive }) => (isActive ? active : 'link')}>
+						{t('navigation.converter')}
+					</NavLink>
+					<NavLink to='/settings' className={({ isActive }) => (isActive ? active : 'link')}>
+						{t('navigation.settings')}
 					</NavLink>
 					<ThemeToggle />
 					<LanguageSelect />

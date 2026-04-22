@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tests - Convertidor de Reglas Dynamo</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #f1f5f9; padding: 24px; }
+    h1 { font-size: 20px; margin-bottom: 20px; color: #7dd3fc; }
+    .suite { margin-bottom: 24px; background: #1e293b; border-radius: 8px; overflow: hidden; }
+    .suite-title { padding: 12px 16px; background: #334155; font-weight: 600; font-size: 14px; }
+    .test { padding: 8px 16px; border-bottom: 1px solid #334155; font-size: 13px; display: flex; align-items: center; gap: 8px; }
+    .test:last-child { border-bottom: none; }
+    .pass { color: #86efac; }
+    .fail { color: #fca5a5; }
+    .icon-pass::before { content: "✓"; color: #22c55e; font-weight: bold; }
+    .icon-fail::before { content: "✗"; color: #ef4444; font-weight: bold; }
+    .error-detail { font-size: 12px; color: #f87171; margin-left: 24px; font-family: monospace; padding: 4px 0; }
+    .summary { padding: 16px; background: #1e293b; border-radius: 8px; margin-top: 24px; font-size: 14px; }
+    .summary.all-pass { border-left: 4px solid #22c55e; }
+    .summary.has-fail { border-left: 4px solid #ef4444; }
+  </style>
+</head>
+<body>
+  <h1>Tests del Parser de Reglas Dynamo</h1>
+  <div id="results"></div>
+  <div id="summary"></div>
+  <script src="../js/bundle.js"></script>
+  <script src="tests.js"></script>
+</body>
+</html>
