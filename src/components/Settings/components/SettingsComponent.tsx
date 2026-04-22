@@ -1,7 +1,7 @@
 ﻿import '@/components/Console/components/console-shell.scss'
 import './settings.scss'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import type {
@@ -24,8 +24,36 @@ interface Props {
 	onClearEnvCredentials: (id: string) => void
 	readEnvCredentials: (id: string) => AwsCredentials | null
 	onAddEnv: () => void
+	onAddEnvsFromImport: (envs: Array<{ name: string; creds: AwsCredentials }>) => void
 	onUpdateEnv: (id: string, patch: Partial<CustomEnvironment>) => void
 	onDeleteEnv: (id: string) => void
+}
+
+// ── Parser de ~/.aws/credentials (formato INI) ───────────────────────────────
+type AwsProfile = { accessKeyId: string; secretAccessKey: string; sessionToken?: string }
+
+function parseAwsCredentialsFile(text: string): Record<string, AwsProfile> {
+	const profiles: Record<string, AwsProfile> = {}
+	let current = ''
+	for (const raw of text.split('\n')) {
+		const line = raw.trim()
+		if (!line || line.startsWith('#') || line.startsWith(';')) continue
+		const sectionMatch = /^\[(.+?)\]$/.exec(line)
+		if (sectionMatch) {
+			current = sectionMatch[1].replace(/^profile\s+/, '')
+			profiles[current] = { accessKeyId: '', secretAccessKey: '' }
+			continue
+		}
+		if (!current) continue
+		const eqIdx = line.indexOf('=')
+		if (eqIdx === -1) continue
+		const key = line.slice(0, eqIdx).trim().toLowerCase()
+		const val = line.slice(eqIdx + 1).trim()
+		if (key === 'aws_access_key_id') profiles[current].accessKeyId = val
+		else if (key === 'aws_secret_access_key') profiles[current].secretAccessKey = val
+		else if (key === 'aws_session_token') profiles[current].sessionToken = val
+	}
+	return profiles
 }
 
 // ── Pill / badge reutilizable ────────────────────────────────────────────────
@@ -50,6 +78,7 @@ export default function SettingsComponent(props: Props) {
 		onClearEnvCredentials,
 		readEnvCredentials,
 		onAddEnv,
+		onAddEnvsFromImport,
 		onUpdateEnv,
 		onDeleteEnv,
 	} = props
@@ -81,6 +110,22 @@ export default function SettingsComponent(props: Props) {
 		setCredsFeedback(t('settings.feedbackCredsCleared'))
 	}
 
+	// ── Importar archivo de credenciales (modo local) ────────────────────────
+	const fileInputRef = useRef<HTMLInputElement>(null)
+	const [importedProfiles, setImportedProfiles] = useState<Record<string, AwsProfile>>({})
+	const [selectedProfile, setSelectedProfile] = useState('')
+	const importHeaderRef = useRef<HTMLInputElement>(null)
+	const [importFeedback, setImportFeedback] = useState('')
+
+	const applyGlobalProfile = (profile: AwsProfile) => {
+		setCreds({
+			accessKeyId: profile.accessKeyId,
+			secretAccessKey: profile.secretAccessKey,
+			sessionToken: profile.sessionToken ?? '',
+		})
+		setCredsFeedback(t('settings.importApplied'))
+	}
+
 	// ── Credenciales por entorno (modo remoto) ────────────────────────────────
 	const [envCreds, setEnvCreds] = useState<Record<string, AwsCredentials>>(() => {
 		const init: Record<string, AwsCredentials> = {}
@@ -94,6 +139,23 @@ export default function SettingsComponent(props: Props) {
 		return init
 	})
 	const [envCredsFeedback, setEnvCredsFeedback] = useState<Record<string, string>>({})
+
+	// Sincronizar envCreds cuando se añaden nuevos entornos (ej: importación)
+	useEffect(() => {
+		setEnvCreds((prev) => {
+			const next = { ...prev }
+			for (const env of settings.customEnvironments) {
+				if (!(env.id in next)) {
+					next[env.id] = readEnvCredentials(env.id) ?? {
+						accessKeyId: '',
+						secretAccessKey: '',
+						sessionToken: '',
+					}
+				}
+			}
+			return next
+		})
+	}, [settings.customEnvironments])
 
 	const getEnvCreds = (id: string): AwsCredentials =>
 		envCreds[id] ?? { accessKeyId: '', secretAccessKey: '', sessionToken: '' }
@@ -236,13 +298,56 @@ export default function SettingsComponent(props: Props) {
 							<h2 className='console-panel__title'>{t('settings.envConfigTitle')}</h2>
 							<p className='console-panel__subtitle'>{t('settings.envConfigSubtitle')}</p>
 						</div>
-						<button
-							type='button'
-							className='console-button console-button--primary'
-							onClick={onAddEnv}>
-							{t('settings.addEnv')}
-						</button>
+						<div className='settings-header-actions'>
+							<input
+								ref={importHeaderRef}
+								type='file'
+								className='settings-file-hidden'
+								onChange={(e) => {
+									const file = e.target.files?.[0]
+									if (!file) return
+									const reader = new FileReader()
+									reader.onload = (ev) => {
+										const text = ev.target?.result as string
+										const profiles = parseAwsCredentialsFile(text)
+										const envs = Object.entries(profiles).map(([name, p]) => ({
+											name,
+											creds: {
+												accessKeyId: p.accessKeyId,
+												secretAccessKey: p.secretAccessKey,
+												sessionToken: p.sessionToken ?? '',
+											},
+										}))
+										if (envs.length > 0) {
+											onAddEnvsFromImport(envs)
+											setImportFeedback(t('settings.importEnvsCreated', { count: envs.length }))
+										} else {
+											setImportFeedback(t('settings.importEnvsEmpty'))
+										}
+									}
+									reader.readAsText(file)
+									e.target.value = ''
+								}}
+							/>
+							<button
+								type='button'
+								className='console-button console-button--secondary'
+								onClick={() => importHeaderRef.current?.click()}>
+								{t('settings.addEnvImport')}
+							</button>
+							<button
+								type='button'
+								className='console-button console-button--primary'
+								onClick={onAddEnv}>
+								{t('settings.addEnv')}
+							</button>
+						</div>
 					</div>
+					{importFeedback && (
+						<div className='console-feedback console-feedback--success settings-import-feedback'>
+							{importFeedback}
+						</div>
+					)}
 
 					{configuredEnvs.length === 0 && (
 						<div className='console-form'>
@@ -404,6 +509,58 @@ export default function SettingsComponent(props: Props) {
 						{hasActiveCreds && <Pill label={t('settings.envActive')} variant='success' />}
 					</div>
 					<div className='console-form'>
+						{/* Importar archivo */}
+						<div className='settings-import-row'>
+							<input
+								ref={fileInputRef}
+								type='file'
+								accept='.credentials,text/plain,'
+								className='settings-file-hidden'
+								onChange={(e) => {
+									const file = e.target.files?.[0]
+									if (!file) return
+									const reader = new FileReader()
+									reader.onload = (ev) => {
+										const text = ev.target?.result as string
+										const profiles = parseAwsCredentialsFile(text)
+										setImportedProfiles(profiles)
+										setSelectedProfile(Object.keys(profiles)[0] ?? '')
+									}
+									reader.readAsText(file)
+									e.target.value = ''
+								}}
+							/>
+							<button
+								type='button'
+								className='console-button console-button--secondary settings-import-btn'
+								onClick={() => fileInputRef.current?.click()}>
+								{t('settings.importFile')}
+							</button>
+							{Object.keys(importedProfiles).length > 0 && (
+								<>
+									<select
+										className='console-select settings-import-select'
+										value={selectedProfile}
+										onChange={(e) => setSelectedProfile(e.target.value)}>
+										{Object.keys(importedProfiles).map((p) => (
+											<option key={p} value={p}>
+												{p}
+											</option>
+										))}
+									</select>
+									<button
+										type='button'
+										className='console-button console-button--primary'
+										disabled={!selectedProfile}
+										onClick={() => {
+											const profile = importedProfiles[selectedProfile]
+											if (profile) applyGlobalProfile(profile)
+										}}>
+										{t('settings.importApply')}
+									</button>
+								</>
+							)}
+						</div>
 						<div className='console-form__grid'>
 							<label className='console-label'>
 								<span>Access Key ID</span>

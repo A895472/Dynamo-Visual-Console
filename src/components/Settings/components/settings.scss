@@ -129,6 +129,42 @@
 	min-height: 80px;
 }
 
+// ── Header actions group
+.settings-header-actions {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	flex-wrap: wrap;
+}
+
+.settings-import-feedback {
+	margin-top: 0.5rem;
+	font-size: 0.85rem;
+}
+
+// ── Credentials file import ───────────────────────────────────────────────────
+.settings-import-row {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	flex-wrap: wrap;
+	margin-bottom: 0.75rem;
+}
+
+.settings-file-hidden {
+	display: none;
+}
+
+.settings-import-btn {
+	white-space: nowrap;
+}
+
+.settings-import-select {
+	flex: 1;
+	min-width: 140px;
+	max-width: 220px;
+}
+
 // ── Bottom action row ─────────────────────────────────────────────────────────
 .settings-actions {
 	display: flex;

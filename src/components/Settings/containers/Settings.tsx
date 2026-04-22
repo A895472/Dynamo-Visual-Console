@@ -41,6 +41,20 @@ export function Settings() {
 		consoleApi.writeSettings(updated)
 	}
 
+	const handleAddEnvsFromImport = (envs: Array<{ name: string; creds: AwsCredentials }>) => {
+		const newEnvs: CustomEnvironment[] = envs.map(({ name, creds }) => {
+			const id = `env-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
+			writeEnvCredentials(id, creds)
+			return { id, label: name, targetEnv: 'desa' as const, readonly: true }
+		})
+		const updated = {
+			...settings,
+			customEnvironments: [...settings.customEnvironments, ...newEnvs],
+		}
+		setSettings(updated)
+		consoleApi.writeSettings(updated)
+	}
+
 	const handleUpdateEnv = (id: string, patch: Partial<CustomEnvironment>) => {
 		const updated = {
 			...settings,
@@ -71,6 +85,7 @@ export function Settings() {
 			onClearEnvCredentials={handleClearEnvCredentials}
 			readEnvCredentials={readEnvCreds}
 			onAddEnv={handleAddEnv}
+			onAddEnvsFromImport={handleAddEnvsFromImport}
 			onUpdateEnv={handleUpdateEnv}
 			onDeleteEnv={handleDeleteEnv}
 		/>
