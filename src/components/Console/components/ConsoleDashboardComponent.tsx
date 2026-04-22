@@ -10,12 +10,13 @@ interface Props {
 	availableEnvironments: { id: string; label: string }[]
 	tables: ConsoleTableSummary[]
 	onChangeEnvironment: (environment: string) => void
+	onOpenTable: (tableName: string) => void
 }
 
 const environments = ['desa', 'pre', 'pro']
 
 export default function ConsoleDashboardComponent(props: Props) {
-	const { environment, availableEnvironments, tables, onChangeEnvironment } = props
+	const { environment, availableEnvironments, tables, onChangeEnvironment, onOpenTable } = props
 	const { t } = useTranslation('console')
 
 	// En remoto usamos solo los entornos configurados; en local, el array completo
@@ -115,7 +116,11 @@ export default function ConsoleDashboardComponent(props: Props) {
 					</div>
 					<div className='console-table-list'>
 						{tables.map((table) => (
-							<div key={table.name} className='console-table'>
+							<button
+								key={table.name}
+								type='button'
+								className='console-table console-table--clickable'
+								onClick={() => onOpenTable(table.name)}>
 								<div className='console-row'>
 									<strong>{table.name}</strong>
 									<span className={`console-pill console-pill--${table.riskLevel}`}>
@@ -130,7 +135,7 @@ export default function ConsoleDashboardComponent(props: Props) {
 										{t('tables.updatedAt', { value: new Date(table.lastUpdated).toLocaleString() })}
 									</span>
 								</div>
-							</div>
+							</button>
 						))}
 					</div>
 				</article>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSearchParams } from 'react-router-dom'
 
 import type { ConsoleItem, ConsoleTableSummary } from '@/models/console'
 import { TARGET_ENVIRONMENTS } from '@/models/console'
@@ -121,7 +122,10 @@ export function Tables() {
 		: TARGET_ENVIRONMENTS.map((id) => ({ id, label: t(`environment.names.${id}`) }))
 
 	const [tables, setTables] = useState<ConsoleTableSummary[]>([])
-	const [selectedTableName, setSelectedTableName] = useState(settings.defaultTableName)
+	const [searchParams, setSearchParams] = useSearchParams()
+	const [selectedTableName, setSelectedTableName] = useState(
+		searchParams.get('table') ?? settings.defaultTableName
+	)
 	const [items, setItems] = useState<ConsoleItem[]>([])
 	const [selectedItemId, setSelectedItemId] = useState('')
 	const [editorValue, setEditorValue] = useState('')
@@ -194,6 +198,13 @@ export function Tables() {
 				setIsLoadingItems(false)
 			})
 	}, [environment, selectedTableName])
+
+	// Mantener la URL sincronizada con la tabla seleccionada
+	useEffect(() => {
+		if (selectedTableName) {
+			setSearchParams({ table: selectedTableName }, { replace: true })
+		}
+	}, [selectedTableName])
 
 	// Atributos que tienen otros items de la tabla pero que el item en edición no tiene
 	const selectedTable = tables.find((t) => t.name === selectedTableName)
