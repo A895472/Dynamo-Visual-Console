@@ -304,6 +304,19 @@
 	color: #fff;
 }
 
+.console-button--ghost {
+	background: transparent;
+	color: var(--muted);
+	border: none;
+	padding-inline: 0.5rem;
+	font-weight: 500;
+
+	&:hover {
+		color: var(--fg);
+		transform: none;
+	}
+}
+
 .console-empty,
 .console-feedback {
 	border-radius: 18px;

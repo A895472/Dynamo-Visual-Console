@@ -402,7 +402,7 @@ export default function SettingsComponent(props: Props) {
 							/>
 							<button
 								type='button'
-								className='console-button console-button--secondary'
+								className='console-button console-button--ghost'
 								onClick={() => importHeaderRef.current?.click()}>
 								{t('settings.addEnvImport')}
 							</button>
