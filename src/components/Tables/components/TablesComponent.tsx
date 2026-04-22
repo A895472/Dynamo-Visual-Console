@@ -1,8 +1,9 @@
 import './TablesComponent.scss'
 
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import type { ConsoleItem, ConsoleTableSummary } from '@/models/console'
+import type { ConsoleItem, ConsoleTableSummary, TargetEnvironment } from '@/models/console'
 
 interface StructuredField {
 	key: string
@@ -89,6 +90,16 @@ export default function TablesComponent(props: Props) {
 	} = props
 	const { t } = useTranslation('console')
 
+	const [filterText, setFilterText] = useState('')
+
+	useEffect(() => {
+		setFilterText('')
+	}, [selectedTableName, environment])
+
+	const visibleItems = filterText.trim()
+		? items.filter((item) => JSON.stringify(item).toLowerCase().includes(filterText.toLowerCase()))
+		: items
+
 	return (
 		<div className='tables-page'>
 			<section className='tables-panel tables-explorer'>
@@ -157,16 +168,34 @@ export default function TablesComponent(props: Props) {
 						</div>
 						{selectedTableName ? <span className='tables-pill'>{selectedTableName}</span> : null}
 					</div>
-					{isLoadingItems ? (
-						<div className='tables-loading'>
-							<div className='tables-spinner' />
-							<p>{t('tablesPage.loadingItems')}</p>
-						</div>
-					) : items.length === 0 ? (
-						<div className='tables-empty'>{t('tablesPage.empty')}</div>
-					) : (
-						<div className='tables-items-list'>
-							{items.map((item) => (
+				{!isLoadingItems && items.length > 0 && (
+					<div className='tables-filter'>
+						<input
+							type='text'
+							className='tables-filter__input'
+							placeholder={t('tablesPage.filterPlaceholder')}
+							value={filterText}
+							onChange={(e) => setFilterText(e.target.value)}
+						/>
+						{filterText.trim() && (
+							<span className='tables-filter__count'>
+								{t('tablesPage.filterCount', { shown: visibleItems.length, total: items.length })}
+							</span>
+						)}
+					</div>
+				)}
+				{isLoadingItems ? (
+					<div className='tables-loading'>
+						<div className='tables-spinner' />
+						<p>{t('tablesPage.loadingItems')}</p>
+					</div>
+				) : items.length === 0 ? (
+					<div className='tables-empty'>{t('tablesPage.empty')}</div>
+				) : visibleItems.length === 0 ? (
+					<div className='tables-empty'>{t('tablesPage.filterEmpty')}</div>
+				) : (
+					<div className='tables-items-list'>
+						{visibleItems.map((item) => (
 								<div
 									key={item.id}
 									className={`tables-item-card ${selectedItemId === String(item.id) ? 'tables-item-card--active' : ''}`}

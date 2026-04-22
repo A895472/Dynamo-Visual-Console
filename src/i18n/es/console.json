@@ -71,7 +71,12 @@
 		"structuredId": "id",
 		"structuredDestino": "destino",
 		"structuredJsonRule": "json_rule",
-		"finalJsonPreview": "JSON final"
+		"finalJsonPreview": "JSON final",
+		"filterPlaceholder": "Filtrar items...",
+		"filterCount": "{{shown}} de {{total}}",
+		"filterEmpty": "Sin resultados para este filtro.",
+		"itemCreatedAt": "Creado: {{value}}",
+		"itemUpdatedAt": "Modificado: {{value}}"
 	},
 	"converter": {
 		"title": "Convertidor y desconvertidor",

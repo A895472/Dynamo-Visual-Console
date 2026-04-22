@@ -71,7 +71,12 @@
 		"structuredId": "id",
 		"structuredDestino": "destino",
 		"structuredJsonRule": "json_rule",
-		"finalJsonPreview": "Final JSON"
+		"finalJsonPreview": "Final JSON",
+		"filterPlaceholder": "Filter items...",
+		"filterCount": "{{shown}} of {{total}}",
+		"filterEmpty": "No items match the current filter.",
+		"itemCreatedAt": "Created: {{value}}",
+		"itemUpdatedAt": "Modified: {{value}}"
 	},
 	"converter": {
 		"title": "Converter and reverse converter",

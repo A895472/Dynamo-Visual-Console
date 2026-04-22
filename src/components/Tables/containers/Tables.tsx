@@ -114,12 +114,10 @@ export function Tables() {
 
 	// Lista de entornos para el desplegable
 	const availableEnvironments = IS_REMOTE_MODE
-		? consoleApi
-				.readSettings()
-				.customEnvironments.map((e) => ({
-					id: e.id,
-					label: e.label ? `${e.label} (${e.targetEnv})` : `(sin nombre) (${e.targetEnv})`,
-				}))
+		? consoleApi.readSettings().customEnvironments.map((e) => ({
+				id: e.id,
+				label: e.label ? `${e.label} (${e.targetEnv})` : `(sin nombre) (${e.targetEnv})`,
+			}))
 		: TARGET_ENVIRONMENTS.map((id) => ({ id, label: t(`environment.names.${id}`) }))
 
 	const [tables, setTables] = useState<ConsoleTableSummary[]>([])

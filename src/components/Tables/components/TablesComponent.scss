@@ -69,6 +69,35 @@
 	align-items: start;
 }
 
+.tables-filter {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	margin-bottom: 0.7rem;
+}
+
+.tables-filter__input {
+	flex: 1;
+	border: 1px solid var(--border);
+	border-radius: 14px;
+	background: var(--panel-strong);
+	color: var(--fg);
+	padding: 0.52rem 0.85rem;
+	font: inherit;
+	font-size: 0.9rem;
+
+	&:focus {
+		outline: 2px solid var(--accent);
+		outline-offset: 1px;
+	}
+}
+
+.tables-filter__count {
+	font-size: 0.82rem;
+	color: var(--muted);
+	white-space: nowrap;
+}
+
 .tables-items-list {
 	display: grid;
 	gap: 0.65rem;
