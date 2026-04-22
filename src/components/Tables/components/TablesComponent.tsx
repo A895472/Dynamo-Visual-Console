@@ -81,7 +81,6 @@ export default function TablesComponent(props: Props) {
 		onDecodedExpressionChange,
 		onApplyDecodedExpression,
 		onSelectItem,
-		onDecodeItem,
 		onDecodeEditor,
 		onOpenEncodeModal,
 		onCloseEncodeModal,
@@ -218,44 +217,69 @@ export default function TablesComponent(props: Props) {
 											<div className='tables-actions'>
 												<button
 													type='button'
-													className='tables-button tables-button--secondary'
+													className='tables-button tables-button--icon tables-button--icon-edit'
+													title={t('tablesPage.edit')}
 													onClick={(event) => {
 														event.stopPropagation()
 														onSelectItem(item)
 													}}>
-													{t('tablesPage.edit')}
+													<svg
+														width='14'
+														height='14'
+														viewBox='0 0 24 24'
+														fill='none'
+														stroke='currentColor'
+														strokeWidth='2'
+														strokeLinecap='round'
+														strokeLinejoin='round'>
+														<path d='M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7' />
+														<path d='M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z' />
+													</svg>
 												</button>
 												<button
 													type='button'
-													className='tables-button tables-button--secondary'
-													onClick={(event) => {
-														event.stopPropagation()
-														onDecodeItem(item)
-													}}>
-													{t('tablesPage.decode')}
-												</button>
-												<span
+													className='tables-button tables-button--icon tables-button--icon-danger'
 													title={
 														isReadonly
 															? 'Entorno en modo lectura. Puedes cambiarlo en Ajustes'
-															: undefined
-													}>
-													<button
-														type='button'
-														className='tables-button tables-button--danger'
-														disabled={isReadonly}
-														onClick={(event) => {
-															event.stopPropagation()
-															onDeleteItem(pkVal)
-														}}>
-														{t('tablesPage.delete')}
-													</button>
-												</span>
+															: t('tablesPage.delete')
+													}
+													disabled={isReadonly}
+													onClick={(event) => {
+														event.stopPropagation()
+														onDeleteItem(pkVal)
+													}}>
+													<svg
+														width='14'
+														height='14'
+														viewBox='0 0 24 24'
+														fill='none'
+														stroke='currentColor'
+														strokeWidth='2'
+														strokeLinecap='round'
+														strokeLinejoin='round'>
+														<polyline points='3 6 5 6 21 6' />
+														<path d='M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6' />
+														<path d='M10 11v6' />
+														<path d='M14 11v6' />
+														<path d='M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2' />
+													</svg>
+												</button>
 											</div>
 										</div>
-										<pre className='tables-code tables-code--item'>
-											{JSON.stringify(item, null, 2)}
-										</pre>
+										<div className='tables-item-card__meta'>
+											{Object.entries(item)
+												.filter(([k]) => k !== tableKeys.partitionKey && k !== tableKeys.sortKey)
+												.slice(0, 3)
+												.map(([k, v]) => (
+													<span key={k} className='tables-item-card__meta-field'>
+														<span className='tables-item-card__meta-key'>{k}</span>
+														<span className='tables-item-card__meta-val'>
+															{String(v ?? '').slice(0, 60)}
+														</span>
+													</span>
+												))}
+										</div>
 									</div>
 								)
 							})}

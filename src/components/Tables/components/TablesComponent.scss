@@ -101,9 +101,12 @@
 .tables-items-list {
 	display: grid;
 	gap: 0.65rem;
-	max-height: min(66vh, 720px);
-	overflow: auto;
-	padding-right: 0.2rem;
+	max-height: min(72vh, 800px);
+	overflow-y: auto;
+	overflow-x: hidden;
+	padding-right: 0.25rem;
+	scrollbar-width: thin;
+	scrollbar-color: var(--border) transparent;
 }
 
 .tables-label__key-name {
@@ -130,6 +133,54 @@
 	min-height: 120px;
 	color: var(--muted);
 	font-size: 0.92rem;
+}
+
+.tables-button--icon {
+	padding: 0.3rem 0.4rem;
+	line-height: 1;
+	border-color: transparent;
+	background: transparent;
+	color: var(--muted);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.tables-button--icon-edit {
+	&:hover {
+		color: var(--accent);
+		background: color-mix(in srgb, var(--accent) 10%, transparent);
+		border-color: color-mix(in srgb, var(--accent) 25%, transparent);
+	}
+}
+
+.tables-button--icon-danger {
+	&:hover {
+		color: var(--danger);
+		background: color-mix(in srgb, var(--danger) 10%, transparent);
+		border-color: color-mix(in srgb, var(--danger) 25%, transparent);
+	}
+}
+
+.tables-button--icon {
+	padding: 0.3rem 0.4rem;
+	font-size: 1rem;
+	line-height: 1;
+	border-color: transparent;
+	background: transparent;
+
+	&:hover {
+		background: color-mix(in srgb, var(--border) 60%, transparent);
+		border-color: var(--border);
+	}
+}
+
+.tables-button--icon-danger {
+	&:hover {
+		background: color-mix(in srgb, var(--danger) 12%, transparent);
+		border-color: color-mix(in srgb, var(--danger) 30%, transparent);
+	}
 }
 
 .tables-button--add-attr {
@@ -222,6 +273,61 @@
 .tables-item-card__title {
 	font-size: 1rem;
 	max-width: 230px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.tables-item-card__meta {
+	display: flex;
+	flex-direction: column;
+	gap: 0.2rem;
+	margin-top: 0.45rem;
+}
+
+.tables-item-card__meta-field {
+	display: flex;
+	gap: 0.4rem;
+	font-size: 0.8rem;
+	overflow: hidden;
+}
+
+.tables-item-card__meta-key {
+	color: var(--muted);
+	white-space: nowrap;
+	flex-shrink: 0;
+
+	&::after {
+		content: ':';
+	}
+}
+
+.tables-item-card__meta-val {
+	color: var(--fg);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.tables-item-card__meta-field {
+	display: flex;
+	gap: 0.4rem;
+	font-size: 0.8rem;
+	overflow: hidden;
+}
+
+.tables-item-card__meta-key {
+	color: var(--muted);
+	white-space: nowrap;
+	flex-shrink: 0;
+
+	&::after {
+		content: ':';
+	}
+}
+
+.tables-item-card__meta-val {
+	color: var(--fg);
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
