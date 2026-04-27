@@ -16,7 +16,27 @@ const confirmMutation = (environment: string, actionLabel: string) => {
 	)
 }
 
-const createNewItem = () => JSON.stringify({ id: `item-${Date.now()}`, enabled: true }, null, 2)
+const createNewItem = (items: ConsoleItem[], pkField: string): string => {
+	const allKeys = Array.from(new Set(items.flatMap((item) => Object.keys(item))))
+	const template: Record<string, unknown> = {}
+
+	// PK siempre primero con valor de plantilla editable
+	template[pkField] = `item-${Date.now()}`
+
+	// Claves prioritarias que existan en la tabla
+	for (const key of PRIORITY_EDITOR_KEYS) {
+		if (key === pkField) continue
+		if (allKeys.includes(key)) template[key] = ''
+	}
+
+	// Resto de claves de la tabla
+	for (const key of allKeys) {
+		if (key === pkField || PRIORITY_EDITOR_KEYS.includes(key)) continue
+		template[key] = ''
+	}
+
+	return JSON.stringify(template, null, 2)
+}
 const PRIORITY_EDITOR_KEYS = ['id', 'destino', 'json_rule']
 
 const orderItemForEditor = (item: ConsoleItem, pkField: string): ConsoleItem => {
@@ -609,7 +629,7 @@ export function Tables() {
 		setDecodedValue('')
 		setDecodedItemId('')
 		setDecodedDirty(false)
-		setEditorValue(createNewItem())
+		setEditorValue(createNewItem(items, tableKeys.partitionKey))
 	}
 
 	const editorParsed = parseEditorItem()

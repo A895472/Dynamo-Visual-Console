@@ -13,6 +13,42 @@
 	box-shadow: var(--shadow-sm);
 }
 
+.tables-panel__header-actions {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.tables-button--new-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 2rem;
+	height: 2rem;
+	border-radius: 50%;
+	border: 1.5px solid var(--border);
+	background: var(--panel-strong);
+	color: var(--fg);
+	font-size: 1.3rem;
+	line-height: 1;
+	cursor: pointer;
+	transition:
+		background 0.15s,
+		color 0.15s,
+		border-color 0.15s;
+
+	&:hover:not(:disabled) {
+		background: var(--accent);
+		color: #fff;
+		border-color: var(--accent);
+	}
+
+	&:disabled {
+		opacity: 0.35;
+		cursor: not-allowed;
+	}
+}
+
 .tables-panel__header {
 	display: flex;
 	justify-content: space-between;

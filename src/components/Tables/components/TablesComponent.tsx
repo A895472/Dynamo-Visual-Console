@@ -167,7 +167,17 @@ export default function TablesComponent(props: Props) {
 							<h2 className='tables-panel__title'>{t('tablesPage.items')}</h2>
 							<p className='tables-panel__subtitle'>{t('tablesPage.itemsSubtitle')}</p>
 						</div>
-						{selectedTableName ? <span className='tables-pill'>{selectedTableName}</span> : null}
+						<div className='tables-panel__header-actions'>
+							{selectedTableName ? <span className='tables-pill'>{selectedTableName}</span> : null}
+							<button
+								type='button'
+								className='tables-button--new-icon'
+								title={t('tablesPage.newItem')}
+								disabled={!selectedTableName}
+								onClick={onNewItem}>
+								+
+							</button>
+						</div>
 					</div>
 					{!isLoadingItems && items.length > 0 && (
 						<div className='tables-filter'>
@@ -294,8 +304,9 @@ export default function TablesComponent(props: Props) {
 							<div className='tables-structured-fields'>
 								{structuredFields.map((field) => {
 									const isKey =
-										field.key === tableKeys.partitionKey ||
-										(tableKeys.sortKey !== undefined && field.key === tableKeys.sortKey)
+										selectedItemId !== '__new__' &&
+										(field.key === tableKeys.partitionKey ||
+											(tableKeys.sortKey !== undefined && field.key === tableKeys.sortKey))
 									const keyLabel =
 										field.key === tableKeys.partitionKey
 											? t('tablesPage.partitionKeyTooltip')
@@ -436,18 +447,6 @@ export default function TablesComponent(props: Props) {
 										disabled={isReadonly}
 										onClick={onSaveItem}>
 										{t('tablesPage.save')}
-									</button>
-								</span>
-								<span
-									title={
-										isReadonly ? 'Entorno en modo lectura. Puedes cambiarlo en Ajustes' : undefined
-									}>
-									<button
-										type='button'
-										className='tables-button tables-button--secondary'
-										disabled={isReadonly}
-										onClick={onNewItem}>
-										{t('tablesPage.newItem')}
 									</button>
 								</span>
 							</div>
