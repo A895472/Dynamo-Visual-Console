@@ -276,6 +276,11 @@ export default function SettingsComponent(props: Props) {
 	const configuredEnvs = settings.customEnvironments
 	const envName = (env: CustomEnvironment) => env.label.trim() || t('settings.envNameEmpty')
 
+	// Show "default table" only when there is an API to query tables from
+	const hasConfiguredApi = IS_REMOTE_MODE
+		? configuredEnvs.length > 0
+		: settings.apiBaseUrl.trim() !== ''
+
 	// ── Render ────────────────────────────────────────────────────────────────
 	return (
 		<div className='console-shell'>
@@ -319,14 +324,16 @@ export default function SettingsComponent(props: Props) {
 							)}
 						</label>
 
-						<label className='console-label'>
-							<span>{t('settings.defaultTable')}</span>
-							<TableCombobox
-								value={settings.defaultTableName}
-								tables={availableTables}
-								onChange={(v) => onChange({ ...settings, defaultTableName: v })}
-							/>
-						</label>
+						{hasConfiguredApi && (
+							<label className='console-label'>
+								<span>{t('settings.defaultTable')}</span>
+								<TableCombobox
+									value={settings.defaultTableName}
+									tables={availableTables}
+									onChange={(v) => onChange({ ...settings, defaultTableName: v })}
+								/>
+							</label>
+						)}
 					</div>
 
 					{/* Readonly — solo modo local */}
