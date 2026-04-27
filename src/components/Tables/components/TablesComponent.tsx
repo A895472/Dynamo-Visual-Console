@@ -48,6 +48,8 @@ interface Props {
 	onSaveItem: () => void
 	onDeleteItem: (itemId: string) => void
 	onNewItem: () => void
+	onDuplicateItem: (item: ConsoleItem) => void
+	editorMode: 'edit' | 'new' | 'duplicate'
 	tableKeys: { partitionKey: string; sortKey?: string }
 	suggestedAttributes: string[]
 	onAddAttribute: (name: string, value: string) => void
@@ -82,6 +84,8 @@ export default function TablesComponent(props: Props) {
 		onSaveItem,
 		onDeleteItem,
 		onNewItem,
+		onDuplicateItem,
+		editorMode,
 		tableKeys,
 		suggestedAttributes,
 		onAddAttribute,
@@ -298,8 +302,40 @@ export default function TablesComponent(props: Props) {
 							<div className='tables-panel__header'>
 								<div>
 									<h2 className='tables-panel__title'>{t('tablesPage.editor')}</h2>
-									<p className='tables-panel__subtitle'>{t('tablesPage.editorSubtitle')}</p>
+									<p className='tables-panel__subtitle'>
+										{editorMode === 'new'
+											? t('tablesPage.editorSubtitleNew')
+											: editorMode === 'duplicate'
+												? t('tablesPage.editorSubtitleDuplicate')
+												: t('tablesPage.editorSubtitle')}
+									</p>
 								</div>
+								{editorMode === 'edit' && (
+									<button
+										type='button'
+										className='tables-button tables-button--icon tables-button--icon-duplicate'
+										title={t('tablesPage.duplicate')}
+										onClick={() => {
+											try {
+												onDuplicateItem(JSON.parse(editorValue) as ConsoleItem)
+											} catch {
+												/* ignore */
+											}
+										}}>
+										<svg
+											width='16'
+											height='16'
+											viewBox='0 0 24 24'
+											fill='none'
+											stroke='currentColor'
+											strokeWidth='2'
+											strokeLinecap='round'
+											strokeLinejoin='round'>
+											<rect x='9' y='9' width='13' height='13' rx='2' ry='2' />
+											<path d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1' />
+										</svg>
+									</button>
+								)}
 							</div>
 							<div className='tables-structured-fields'>
 								{structuredFields.map((field) => {
@@ -428,8 +464,10 @@ export default function TablesComponent(props: Props) {
 								</div>
 							)}
 
-							<div className='tables-panel__subtitle tables-json-preview-title'>
-								{t('tablesPage.finalJsonPreview')}
+							<div className='tables-json-preview-header'>
+								<span className='tables-panel__subtitle tables-json-preview-title'>
+									{t('tablesPage.finalJsonPreview')}
+								</span>
 							</div>
 							<textarea
 								className='tables-textarea'

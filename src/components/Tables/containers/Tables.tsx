@@ -157,6 +157,7 @@ export function Tables() {
 	const [errorMessage, setErrorMessage] = useState('')
 	const [successMessage, setSuccessMessage] = useState('')
 	const [autoEncodeEnabled, setAutoEncodeEnabled] = useState(false)
+	const [editorMode, setEditorMode] = useState<'edit' | 'new' | 'duplicate'>('edit')
 	const [isLoadingTables, setIsLoadingTables] = useState(false)
 	const [isLoadingItems, setIsLoadingItems] = useState(false)
 	const [isLoadingDecode, setIsLoadingDecode] = useState(false)
@@ -330,6 +331,7 @@ export function Tables() {
 	const selectItemInEditor = (item: ConsoleItem) => {
 		setErrorMessage('')
 		const pkVal = String(item[tableKeys.partitionKey] ?? `__pk_${Date.now()}__`)
+		setEditorMode('edit')
 		setSelectedItemId(pkVal)
 		const ordered = orderItemForEditor(item, tableKeys.partitionKey)
 		setEditorValue(JSON.stringify(ordered, null, 2))
@@ -623,8 +625,33 @@ export function Tables() {
 		}
 	}
 
+	const handleDuplicateItem = (item: ConsoleItem) => {
+		const pk = tableKeys.partitionKey
+		const baseId = String(item[pk] ?? `item-${Date.now()}`)
+
+		// Calcular sufijo: -copia, -copia-2, -copia-3...
+		const existingIds = new Set(items.map((i) => String(i[pk] ?? '')))
+		let newId = `${baseId}-copia`
+		if (existingIds.has(newId)) {
+			let n = 2
+			while (existingIds.has(`${baseId}-copia-${n}`)) n++
+			newId = `${baseId}-copia-${n}`
+		}
+
+		const duplicate: ConsoleItem = { ...item, [pk]: newId }
+		setAutoEncodeEnabled(false)
+		setDecodedValue('')
+		setDecodedItemId('')
+		setDecodedDirty(false)
+		setEditorMode('duplicate')
+		setSelectedItemId('__new__')
+		setEditorValue(JSON.stringify(orderItemForEditor(duplicate, pk), null, 2))
+		setSuccessMessage(`Duplicando ${baseId} → ${newId}. Edita y guarda para confirmar.`)
+	}
+
 	const handleNewItem = () => {
 		setAutoEncodeEnabled(false)
+		setEditorMode('new')
 		setSelectedItemId('__new__')
 		setDecodedValue('')
 		setDecodedItemId('')
@@ -706,7 +733,9 @@ export function Tables() {
 			onDeleteItem={(itemId) => {
 				void handleDeleteItem(itemId)
 			}}
+			editorMode={editorMode}
 			onNewItem={handleNewItem}
+			onDuplicateItem={handleDuplicateItem}
 			suggestedAttributes={suggestedAttributes}
 			onAddAttribute={handleAddAttribute}
 		/>

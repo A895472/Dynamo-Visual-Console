@@ -191,6 +191,14 @@
 	}
 }
 
+.tables-button--icon-duplicate {
+	&:hover {
+		color: var(--accent);
+		background: color-mix(in srgb, var(--accent) 10%, transparent);
+		border-color: color-mix(in srgb, var(--accent) 25%, transparent);
+	}
+}
+
 .tables-button--icon-danger {
 	&:hover {
 		color: var(--danger);
@@ -523,8 +531,15 @@
 	color: var(--muted-strong);
 }
 
-.tables-json-preview-title {
+.tables-json-preview-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 	margin-bottom: 0.45rem;
+}
+
+.tables-json-preview-title {
+	margin-bottom: 0;
 }
 
 .tables-modal-overlay {
