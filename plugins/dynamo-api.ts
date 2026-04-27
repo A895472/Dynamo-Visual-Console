@@ -24,18 +24,17 @@ const PROFILE_MAP: Record<string, string> = {
 
 const REGION = process.env.DYNAMO_REGION ?? 'eu-west-1'
 
-/**
- * APP_MODE se establece en vite.config.ts según el modo de arranque:
- *   npm run dev   → local  (usa perfiles de ~/.aws/credentials)
- *   npm run desa  → remote (requiere credenciales en cabeceras de cada request)
- *   npm run pre   → remote
- */
-const APP_MODE = process.env.APP_MODE ?? 'local'
-
 const clientCache = new Map<string, DynamoDBDocumentClient>()
 const baseClientCache = new Map<string, DynamoDBClient>()
 
 function getBaseClient(environment: string, req?: IncomingMessage): DynamoDBClient {
+	// APP_MODE se lee en tiempo de request (no al importar el módulo) para que
+	// refleje correctamente el valor que vite.config.ts asigna a process.env.APP_MODE
+	// según el modo de arranque:
+	//   npm run dev   → local  (usa perfiles de ~/.aws/credentials)
+	//   npm run desa  → remote (requiere credenciales en cabeceras de cada request)
+	const appMode = process.env.APP_MODE ?? 'local'
+
 	// Si el request trae credenciales temporales en cabeceras, usarlas directamente
 	// (no se cachean — cada request puede tener credenciales distintas)
 	const accessKeyId = req?.headers['x-aws-access-key-id'] as string | undefined
@@ -51,7 +50,7 @@ function getBaseClient(environment: string, req?: IncomingMessage): DynamoDBClie
 
 	// En modo remoto, las credenciales son OBLIGATORIAS en las cabeceras.
 	// No caemos a perfiles de ~/.aws para forzar el flujo de configuración manual.
-	if (APP_MODE === 'remote') {
+	if (appMode === 'remote') {
 		throw new Error(
 			'Modo remoto: se requieren credenciales AWS en las cabeceras (x-aws-access-key-id / x-aws-secret-access-key). ' +
 				'Configúralas en Ajustes → credenciales del entorno.'

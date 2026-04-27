@@ -64,7 +64,7 @@ export const readSettings = (): ConsoleSettings => {
 		}
 
 		const saved = JSON.parse(raw) as Partial<ConsoleSettings>
-		// Si apiBaseUrl está vacía en localStorage, usar el DEFAULT
+		// Si apiBaseUrl está vacía en localStorage, caer al DEFAULT (valor del .env)
 		if (!saved.apiBaseUrl?.trim()) {
 			delete saved.apiBaseUrl
 		}

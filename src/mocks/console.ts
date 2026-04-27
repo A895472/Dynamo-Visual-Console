@@ -2,8 +2,7 @@ import type { ConsoleDataset, ConsoleSettings } from '@/models/console'
 
 export const DEFAULT_SETTINGS: ConsoleSettings = {
 	environment: 'desa',
-	// Empty by default to avoid triggering remote API calls on first load
-	apiBaseUrl: '',
+	apiBaseUrl: '/api',
 	converterBaseUrl: '',
 	apiKey: '',
 	defaultTableName: 'rules_console',
