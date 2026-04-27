@@ -63,25 +63,18 @@ export default function TablesComponent(props: Props) {
 		selectedItemId,
 		editorValue,
 		structuredFields,
-		decodedValue,
-		decodedItemId,
-		decodedDirty,
 		encodeModalOpen,
 		encodeExpression,
 		errorMessage,
 		successMessage,
 		isLoadingTables,
 		isLoadingItems,
-		isLoadingDecode,
 		isReadonly,
 		onEnvironmentChange,
 		onTableChange,
 		onEditorChange,
 		onStructuredFieldChange,
-		onDecodedExpressionChange,
-		onApplyDecodedExpression,
 		onSelectItem,
-		onDecodeEditor,
 		onOpenEncodeModal,
 		onCloseEncodeModal,
 		onEncodeExpressionChange,
@@ -320,10 +313,24 @@ export default function TablesComponent(props: Props) {
 											</span>
 											{useTextarea ? (
 												<textarea
-													className={`tables-textarea ${field.key === 'json_rule' ? 'tables-textarea--jsonrule' : ''} ${isKey ? 'tables-field--disabled' : ''}`}
+													className={`tables-textarea ${field.key === 'json_rule' ? 'tables-textarea--jsonrule tables-textarea--jsonrule-clickable' : ''} ${isKey ? 'tables-field--disabled' : ''}`}
 													value={field.value}
 													disabled={isKey}
-													title={isKey ? keyLabel : undefined}
+													readOnly={field.key === 'json_rule'}
+													onClick={
+														field.key === 'json_rule'
+															? () => {
+																	onOpenEncodeModal()
+																}
+															: undefined
+													}
+													title={
+														field.key === 'json_rule'
+															? 'Haz clic para abrir el editor de regla'
+															: isKey
+																? keyLabel
+																: undefined
+													}
 													onChange={(event) =>
 														onStructuredFieldChange(field.key, event.target.value)
 													}
@@ -431,19 +438,6 @@ export default function TablesComponent(props: Props) {
 										{t('tablesPage.save')}
 									</button>
 								</span>
-								<button
-									type='button'
-									className='tables-button tables-button--secondary'
-									disabled={isLoadingDecode}
-									onClick={onDecodeEditor}>
-									{t('tablesPage.decodeEditor')}
-								</button>
-								<button
-									type='button'
-									className='tables-button tables-button--secondary'
-									onClick={onOpenEncodeModal}>
-									{t('tablesPage.openEncodeModal')}
-								</button>
 								<span
 									title={
 										isReadonly ? 'Entorno en modo lectura. Puedes cambiarlo en Ajustes' : undefined
@@ -457,28 +451,6 @@ export default function TablesComponent(props: Props) {
 									</button>
 								</span>
 							</div>
-							{decodedValue ? (
-								<div className='tables-decoded'>
-									<div className='tables-decoded__title'>
-										{t('tablesPage.decodedTitle')}
-										{decodedItemId ? ` · ${decodedItemId}` : ''}
-									</div>
-									<textarea
-										className='tables-textarea tables-textarea--jsonrule'
-										value={decodedValue}
-										onChange={(event) => onDecodedExpressionChange(event.target.value)}
-									/>
-									<div className='tables-actions'>
-										<button
-											type='button'
-											className='tables-button tables-button--primary'
-											onClick={onApplyDecodedExpression}
-											disabled={!decodedDirty}>
-											{t('tablesPage.applyDecoded')}
-										</button>
-									</div>
-								</div>
-							) : null}
 							{successMessage ? (
 								<div className='tables-feedback tables-feedback--success'>{successMessage}</div>
 							) : null}
