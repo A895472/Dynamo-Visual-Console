@@ -63,3 +63,9 @@ export interface ConsoleDataset {
 	tables: Record<TargetEnvironment, ConsoleTableSummary[]>
 	items: Record<TargetEnvironment, Record<string, ConsoleItem[]>>
 }
+
+/** Una entrada de historial local: estado anterior de un item antes de guardarse. */
+export interface HistoryEntry {
+	snapshot: ConsoleItem
+	savedAt: string
+}

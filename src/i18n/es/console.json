@@ -88,7 +88,12 @@
 		"addAttrConfirm": "Añadir",
 		"noKey": "sin clave",
 		"partitionKeyTooltip": "Clave de partición (PK) — no se puede modificar",
-		"sortKeyTooltip": "Clave de ordenación (SK) — no se puede modificar"
+		"sortKeyTooltip": "Clave de ordenación (SK) — no se puede modificar",
+		"historyTitle": "Historial de cambios ({{count}} versión guardada)",
+		"historyTitle_other": "Historial de cambios ({{count}} versiones guardadas)",
+		"historyEntryLatest": "Más reciente — {{date}} {{time}}",
+		"historyEntryOld": "Anterior — {{date}} {{time}}",
+		"historyRestore": "Restaurar"
 	},
 	"converter": {
 		"title": "Convertidor y desconvertidor",

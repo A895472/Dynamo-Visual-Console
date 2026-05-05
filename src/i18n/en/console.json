@@ -88,7 +88,12 @@
 		"addAttrConfirm": "Add",
 		"noKey": "no key",
 		"partitionKeyTooltip": "Partition key (PK) — cannot be modified",
-		"sortKeyTooltip": "Sort key (SK) — cannot be modified"
+		"sortKeyTooltip": "Sort key (SK) — cannot be modified",
+		"historyTitle": "Change history ({{count}} saved version)",
+		"historyTitle_other": "Change history ({{count}} saved versions)",
+		"historyEntryLatest": "Most recent — {{date}} {{time}}",
+		"historyEntryOld": "Older — {{date}} {{time}}",
+		"historyRestore": "Restore"
 	},
 	"converter": {
 		"title": "Converter and reverse converter",

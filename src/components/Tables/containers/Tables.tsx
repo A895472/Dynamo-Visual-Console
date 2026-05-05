@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router-dom'
 
-import type { ConsoleItem, ConsoleTableSummary } from '@/models/console'
+import type { ConsoleItem, ConsoleTableSummary, HistoryEntry } from '@/models/console'
 import { TARGET_ENVIRONMENTS } from '@/models/console'
 import { consoleApi } from '@/services/console/api'
+import { getItemHistory, pushHistoryEntry } from '@/services/console/history'
 
 import TablesComponent from '../components/TablesComponent'
 
@@ -161,6 +162,7 @@ export function Tables() {
 	const [isLoadingTables, setIsLoadingTables] = useState(false)
 	const [isLoadingItems, setIsLoadingItems] = useState(false)
 	const [isLoadingDecode, setIsLoadingDecode] = useState(false)
+	const [itemHistory, setItemHistory] = useState<HistoryEntry[]>([])
 
 	useEffect(() => {
 		setIsLoadingTables(true)
@@ -341,6 +343,7 @@ export function Tables() {
 		if (typeof ordered.json_rule === 'string' && ordered.json_rule.trim().length > 0) {
 			void decodeFromJsonRuleString(ordered.json_rule, pkVal, false)
 		}
+		setItemHistory(getItemHistory(environment, selectedTableName, pkVal))
 		setSuccessMessage(`Item ${pkVal} cargado en el editor.`)
 	}
 
@@ -368,8 +371,23 @@ export function Tables() {
 			return
 		}
 
+		// Guardamos el estado anterior en el historial antes de sobrescribir
+		if (editorMode === 'edit' && selectedItemId && selectedItemId !== '__new__') {
+			const currentItem = items.find(
+				(item) => String(item[tableKeys.partitionKey]) === selectedItemId
+			)
+			if (currentItem) {
+				pushHistoryEntry(environment, selectedTableName, selectedItemId, currentItem)
+				setItemHistory(getItemHistory(environment, selectedTableName, selectedItemId))
+			}
+		}
+
 		try {
 			await consoleApi.saveItem(environment, selectedTableName, parsed)
+			// Actualizar historial refrescado tras el guardado
+			if (editorMode === 'edit' && selectedItemId && selectedItemId !== '__new__') {
+				setItemHistory(getItemHistory(environment, selectedTableName, selectedItemId))
+			}
 			setSuccessMessage(`Item ${String(parsed.id ?? '(sin id)')} guardado correctamente.`)
 			reload()
 		} catch (error) {
@@ -656,7 +674,22 @@ export function Tables() {
 		setDecodedValue('')
 		setDecodedItemId('')
 		setDecodedDirty(false)
+		setItemHistory([])
 		setEditorValue(createNewItem(items, tableKeys.partitionKey))
+	}
+
+	const handleRestoreFromHistory = (entry: HistoryEntry) => {
+		setErrorMessage('')
+		const ordered = orderItemForEditor(entry.snapshot, tableKeys.partitionKey)
+		setEditorValue(JSON.stringify(ordered, null, 2))
+		setDecodedValue('')
+		setDecodedItemId('')
+		setDecodedDirty(false)
+		setAutoEncodeEnabled(false)
+		if (typeof ordered.json_rule === 'string' && ordered.json_rule.trim().length > 0) {
+			void decodeFromJsonRuleString(ordered.json_rule, selectedItemId, false)
+		}
+		setSuccessMessage('Versión anterior restaurada en el editor — revisa y guarda si es correcta.')
 	}
 
 	const editorParsed = parseEditorItem()
@@ -738,6 +771,8 @@ export function Tables() {
 			onDuplicateItem={handleDuplicateItem}
 			suggestedAttributes={suggestedAttributes}
 			onAddAttribute={handleAddAttribute}
+			itemHistory={itemHistory}
+			onRestoreFromHistory={handleRestoreFromHistory}
 		/>
 	)
 }

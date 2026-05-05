@@ -3,7 +3,12 @@ import './TablesComponent.scss'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import type { ConsoleItem, ConsoleTableSummary, TargetEnvironment } from '@/models/console'
+import type {
+	ConsoleItem,
+	ConsoleTableSummary,
+	HistoryEntry,
+	TargetEnvironment,
+} from '@/models/console'
 
 interface StructuredField {
 	key: string
@@ -53,6 +58,8 @@ interface Props {
 	tableKeys: { partitionKey: string; sortKey?: string }
 	suggestedAttributes: string[]
 	onAddAttribute: (name: string, value: string) => void
+	itemHistory: HistoryEntry[]
+	onRestoreFromHistory: (entry: HistoryEntry) => void
 }
 
 export default function TablesComponent(props: Props) {
@@ -89,11 +96,14 @@ export default function TablesComponent(props: Props) {
 		tableKeys,
 		suggestedAttributes,
 		onAddAttribute,
+		itemHistory,
+		onRestoreFromHistory,
 	} = props
 	const { t } = useTranslation('console')
 
 	const [filterText, setFilterText] = useState('')
 	const [addAttrOpen, setAddAttrOpen] = useState(false)
+	const [historyOpen, setHistoryOpen] = useState(false)
 	const [addAttrName, setAddAttrName] = useState('')
 	const [addAttrValue, setAddAttrValue] = useState('')
 
@@ -494,6 +504,63 @@ export default function TablesComponent(props: Props) {
 							{errorMessage ? (
 								<div className='tables-feedback tables-feedback--error'>{errorMessage}</div>
 							) : null}
+
+							{editorMode === 'edit' && itemHistory.length > 0 && (
+								<div className='tables-history'>
+									<button
+										type='button'
+										className='tables-history__toggle'
+										onClick={() => setHistoryOpen((prev) => !prev)}>
+										<span className='tables-history__toggle-icon'>{historyOpen ? '▾' : '▸'}</span>
+										{t('tablesPage.historyTitle', { count: itemHistory.length })}
+									</button>
+									{historyOpen && (
+										<div className='tables-history__list'>
+											{itemHistory.map((entry, idx) => {
+												const date = new Date(entry.savedAt)
+												const dateStr = date.toLocaleDateString()
+												const timeStr = date.toLocaleTimeString([], {
+													hour: '2-digit',
+													minute: '2-digit',
+												})
+												const labelKey = idx === 0 ? 'historyEntryLatest' : 'historyEntryOld'
+												const label = t(`tablesPage.${labelKey}`, { date: dateStr, time: timeStr })
+												const previewFields = Object.entries(entry.snapshot)
+													.filter(([k]) => k !== tableKeys.partitionKey && k !== tableKeys.sortKey)
+													.slice(0, 2)
+												return (
+													<div key={entry.savedAt} className='tables-history__entry'>
+														<div className='tables-history__entry-meta'>
+															<span className='tables-history__entry-label'>{label}</span>
+															<button
+																type='button'
+																className='tables-button tables-button--secondary tables-history__restore-btn'
+																onClick={() => {
+																	setHistoryOpen(false)
+																	onRestoreFromHistory(entry)
+																}}>
+																{t('tablesPage.historyRestore')}
+															</button>
+														</div>
+														{previewFields.length > 0 && (
+															<div className='tables-history__entry-preview'>
+																{previewFields.map(([k, v]) => (
+																	<span key={k} className='tables-item-card__meta-field'>
+																		<span className='tables-item-card__meta-key'>{k}</span>
+																		<span className='tables-item-card__meta-val'>
+																			{String(v ?? '').slice(0, 80)}
+																		</span>
+																	</span>
+																))}
+															</div>
+														)}
+													</div>
+												)
+											})}
+										</div>
+									)}
+								</div>
+							)}
 						</>
 					)}
 				</article>
