@@ -83,6 +83,9 @@ function reverseComparison(inner: DynamoInnerNode): string {
 	const literal = litNode.value1
 	const dataType = litNode.value2 as string
 
+	if ((litNode as { name?: string }).name === 'field') {
+		return `${field} ${operator} ${literal as string}`
+	}
 	return `${field} ${operator} ${formatValue(literal, dataType)}`
 }
 

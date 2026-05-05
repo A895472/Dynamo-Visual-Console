@@ -46,6 +46,9 @@ function generateComparisonName(field, operator, value) {
     return `${alias} ${symbol} (${vals})`;
   }
 
+  if (value.isFieldReference) {
+    return `${alias} ${symbol} ${value.value}`;
+  }
   return `${alias} ${symbol} ${formatLiteralValue(value.value)}`;
 }
 
@@ -71,7 +74,7 @@ function generateComparisonNode(node) {
         value2: fieldType,
       },
       value2: {
-        name: 'lit',
+        name: value.isFieldReference ? 'field' : 'lit',
         value1: value.value,
         value2: value.dataType,
       },
@@ -114,16 +117,16 @@ function generateInNode(node) {
 
     const right = idx === items.length - 2
       ? generateComparisonNode({
-          type: ASTNodeType.COMPARISON,
-          field,
-          operator: compOp,
-          value: items[idx + 1],
-        })
+        type: ASTNodeType.COMPARISON,
+        field,
+        operator: compOp,
+        value: items[idx + 1],
+      })
       : buildTree(items, idx + 1);
 
     const alias = getFieldAlias(field);
     const leftName = `${alias} = ${formatLiteralValue(items[idx].value)}`;
-    const rightNames = items.slice(idx + 1).map(v => 
+    const rightNames = items.slice(idx + 1).map(v =>
       `${alias} = ${formatLiteralValue(v.value)}`
     );
     const groupName = `(${[leftName, ...rightNames].join(` ${logicalOp === 'or' ? 'OR' : 'AND'} `)})`;

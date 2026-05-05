@@ -115,8 +115,8 @@ function validateFieldNode(node, path) {
 
 function validateLitNode(node, path) {
   const errors = [];
-  if (node.name !== 'lit') {
-    errors.push({ path: `${path}.name`, message: `Se esperaba "lit" pero se encontró "${node.name}"` });
+  if (node.name !== 'lit' && node.name !== 'field') {
+    errors.push({ path: `${path}.name`, message: `Se esperaba "lit" o "field" pero se encontró "${node.name}"` });
   }
   if (node.value1 === undefined) {
     errors.push({ path: `${path}.value1`, message: 'Falta el valor del literal' });

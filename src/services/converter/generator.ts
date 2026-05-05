@@ -45,6 +45,9 @@ function generateComparisonName(
 		return `${alias} ${symbol} (${vals})`
 	}
 
+	if ((value as ValueInfo).isFieldReference) {
+		return `${alias} ${symbol} ${String((value as ValueInfo).value)}`
+	}
 	return `${alias} ${symbol} ${formatLiteralValue(value.value)}`
 }
 
@@ -89,7 +92,7 @@ function generateComparisonNode(node: ComparisonNode): DynamoNode {
 				value2: fieldType,
 			},
 			value2: {
-				name: 'lit',
+				name: singleValue.isFieldReference ? 'field' : 'lit',
 				value1: singleValue.value as string | number | boolean | null,
 				value2: singleValue.dataType,
 			},

@@ -62,6 +62,7 @@ function tokenize(input) {
     let value = '';
     while (pos < input.length && input[pos] !== quote) {
       if (input[pos] === '\\') {
+        value += '\\';
         pos++;
         if (pos >= input.length) {
           throw new TokenizerError('Cadena sin terminar: secuencia de escape al final', start, input);
@@ -116,7 +117,7 @@ function tokenize(input) {
     const ch = input[pos];
     const startPos = pos;
 
-    if (ch === '(' ) {
+    if (ch === '(') {
       tokens.push(createToken(TokenType.LPAREN, '(', pos, 1));
       pos++;
       continue;

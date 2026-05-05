@@ -70,6 +70,9 @@ function reverseComparison(inner) {
   const literal = inner.value2.value1;
   const dataType = inner.value2.value2;
 
+  if (inner.value2.name === 'field') {
+    return `${field} ${operator} ${literal}`;
+  }
   return `${field} ${operator} ${formatValue(literal, dataType)}`;
 }
 

@@ -64,6 +64,7 @@ function tokenize(input: string): Token[] {
 		let value = ''
 		while (pos < input.length && input[pos] !== quote) {
 			if (input[pos] === '\\') {
+				value += '\\'
 				pos++
 				if (pos >= input.length) {
 					throw new TokenizerError(

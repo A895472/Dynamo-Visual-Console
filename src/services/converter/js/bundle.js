@@ -58,6 +58,7 @@
       let value = '';
       while (pos < input.length && input[pos] !== quote) {
         if (input[pos] === '\\') {
+          value += '\\';
           pos++;
           if (pos >= input.length) {
             throw new TokenizerError('Cadena sin terminar: secuencia de escape al final', start, input);
@@ -328,7 +329,8 @@
       if (t.type === TokenType.FIELD) {
         advance();
         if (t.value.toUpperCase() === 'NULL') return { value: null, dataType: 'Null' };
-        return { value: t.value, dataType: 'String' };
+        var FIELD_PATH_RE = /^[a-zA-Z_][a-zA-Z0-9_]*(\.[a-zA-Z_][a-zA-Z0-9_]*)+$/;
+        return { value: t.value, dataType: 'String', isFieldReference: FIELD_PATH_RE.test(t.value) };
       }
       throw new ParseError('Se esperaba un valor pero se encontr\u00f3 "' + t.value + '"', t, input);
     }
@@ -376,12 +378,13 @@
     var alias = getFieldAlias(node.field);
     var sym = OP_SYMBOL[node.operator] || node.operator;
     var fieldType = node.value.dataType === 'Regex' ? 'String' : node.value.dataType;
+    var displayValue = node.value.isFieldReference ? node.value.value : fmtLit(node.value.value);
     return {
-      name: alias + ' ' + sym + ' ' + fmtLit(node.value.value),
+      name: alias + ' ' + sym + ' ' + displayValue,
       value: {
         name: dynOp,
         value1: { name: 'field', value1: node.field, value2: fieldType },
-        value2: { name: 'lit', value1: node.value.value, value2: node.value.dataType },
+        value2: { name: node.value.isFieldReference ? 'field' : 'lit', value1: node.value.value, value2: node.value.dataType },
       },
     };
   }
@@ -502,6 +505,9 @@
   }
 
   function revComparison(inner) {
+    if (inner.value2 && inner.value2.name === 'field') {
+      return inner.value1.value1 + ' ' + REV_OP[inner.name] + ' ' + inner.value2.value1;
+    }
     return inner.value1.value1 + ' ' + REV_OP[inner.name] + ' ' + fmtVal(inner.value2.value1, inner.value2.value2);
   }
 
@@ -576,7 +582,7 @@
       }
       if (!inner.value2) errors.push({ path: path + '.value.value2', message: 'Falta el literal' });
       else {
-        if (inner.value2.name !== 'lit') errors.push({ path: path + '.value.value2.name', message: 'Se esperaba "lit"' });
+        if (inner.value2.name !== 'lit' && inner.value2.name !== 'field') errors.push({ path: path + '.value.value2.name', message: 'Se esperaba "lit" o "field"' });
         if (inner.value2.value1 === undefined) errors.push({ path: path + '.value.value2.value1', message: 'Falta el valor' });
         if (!inner.value2.value2 || VALID_TYPES.indexOf(inner.value2.value2) === -1) errors.push({ path: path + '.value.value2.value2', message: 'Tipo inv\u00e1lido' });
       }

@@ -203,7 +203,9 @@ class Parser {
       if (upper === 'NULL') {
         return { value: null, dataType: 'Null' };
       }
-      return { value: token.value, dataType: 'String' };
+      const FIELD_PATH_RE = /^[a-zA-Z_][a-zA-Z0-9_]*(\.[a-zA-Z_][a-zA-Z0-9_]*)+$/;
+      const isFieldReference = FIELD_PATH_RE.test(token.value);
+      return { value: token.value, dataType: 'String', isFieldReference };
     }
 
     throw new ParseError(

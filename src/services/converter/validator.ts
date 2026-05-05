@@ -149,10 +149,10 @@ function validateFieldNode(node: DynamoSchemaNode, path: string): ValidationErro
 
 function validateLitNode(node: DynamoSchemaNode, path: string): ValidationError[] {
 	const errors: ValidationError[] = []
-	if (node.name !== 'lit') {
+	if (node.name !== 'lit' && node.name !== 'field') {
 		errors.push({
 			path: `${path}.name`,
-			message: `Se esperaba "lit" pero se encontró "${node.name ?? ''}"`,
+			message: `Se esperaba "lit" o "field" pero se encontrÃ³ "${node.name ?? ''}"`,
 		})
 	}
 	const value1 = node.value1 as unknown

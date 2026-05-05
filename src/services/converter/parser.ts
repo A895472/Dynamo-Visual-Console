@@ -24,6 +24,7 @@ const ASTNodeType = Object.freeze({
 export interface ValueInfo {
 	value: string | number | boolean | null
 	dataType: string
+	isFieldReference?: boolean
 }
 
 export interface ComparisonNode {
@@ -230,7 +231,9 @@ class Parser {
 			if (upper === 'NULL') {
 				return { value: null, dataType: 'Null' }
 			}
-			return { value: token.value as string, dataType: 'String' }
+			const FIELD_PATH_RE = /^[a-zA-Z_][a-zA-Z0-9_]*(\.[a-zA-Z_][a-zA-Z0-9_]*)+$/
+			const isFieldReference = FIELD_PATH_RE.test(token.value as string)
+			return { value: token.value as string, dataType: 'String', isFieldReference }
 		}
 
 		throw new ParseError(
