@@ -664,7 +664,7 @@ export function Tables() {
 		? Object.entries(editorParsed).map(([key, value]) => {
 				const computedValue =
 					key === 'json_rule'
-						? decodedValue
+						? decodedValue || (typeof value === 'string' ? value : '')
 						: typeof value === 'string'
 							? value
 							: value === null
