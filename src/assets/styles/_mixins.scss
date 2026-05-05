@@ -16,6 +16,45 @@
 	--danger: #b42318;
 	--shadow-sm: 0 12px 28px rgba(37, 44, 53, 0.08);
 	--shadow-lg: 0 28px 60px rgba(37, 44, 53, 0.12);
+
+	// Radios
+	--card-radius: 20px;
+	--radius-lg: 28px;
+	--radius-md: 14px;
+	--radius-sm: 8px;
+
+	// Overlay
+	--overlay-bg: rgba(2, 9, 17, 0.62);
+
+	// Colores JSON syntax
+	--json-key: #0062a3;
+	--json-string: #2d7a2d;
+	--json-number: #b45309;
+	--json-bool: #6b21a8;
+
+	// Skeleton
+	--sk-base: rgba(20, 33, 38, 0.07);
+	--sk-anim: rgba(20, 33, 38, 0.14);
+
+	// Botones
+	--btn-primary-bg: var(--accent);
+	--btn-primary-fg: #fff;
+	--btn-primary-bg-hover: color-mix(in srgb, var(--accent) 85%, #000);
+	--btn-secondary-bg: var(--panel-strong);
+	--btn-secondary-fg: var(--fg);
+	--btn-secondary-bg-hover: var(--bg-alt);
+
+	// Badge éxito
+	--success-bg: var(--success);
+	--success-fg: #fff;
+
+	// Animación
+	--spin-duration: 8s;
+
+	// Severidades
+	--severity-low: #0a7a47;
+	--severity-medium: #9a5d00;
+	--severity-high: #b02020;
 }
 
 @mixin theme-dark {
@@ -36,4 +75,43 @@
 	--danger: #f87171;
 	--shadow-sm: 0 12px 28px rgba(0, 0, 0, 0.3);
 	--shadow-lg: 0 28px 60px rgba(0, 0, 0, 0.38);
+
+	// Radios
+	--card-radius: 20px;
+	--radius-lg: 28px;
+	--radius-md: 14px;
+	--radius-sm: 8px;
+
+	// Overlay
+	--overlay-bg: rgba(2, 9, 17, 0.62);
+
+	// Colores JSON syntax
+	--json-key: #6ea6e0;
+	--json-string: #8acf8a;
+	--json-number: #e0a06e;
+	--json-bool: #c58de0;
+
+	// Skeleton
+	--sk-base: rgba(236, 244, 245, 0.06);
+	--sk-anim: rgba(236, 244, 245, 0.12);
+
+	// Botones
+	--btn-primary-bg: var(--accent);
+	--btn-primary-fg: #0a1520;
+	--btn-primary-bg-hover: color-mix(in srgb, var(--accent) 85%, #fff);
+	--btn-secondary-bg: var(--panel-strong);
+	--btn-secondary-fg: var(--fg);
+	--btn-secondary-bg-hover: color-mix(in srgb, var(--panel-strong) 85%, var(--fg));
+
+	// Badge éxito
+	--success-bg: color-mix(in srgb, var(--success) 60%, #000);
+	--success-fg: #fff;
+
+	// Animación
+	--spin-duration: 8s;
+
+	// Severidades
+	--severity-low: #4ade80;
+	--severity-medium: #fb923c;
+	--severity-high: #f87171;
 }

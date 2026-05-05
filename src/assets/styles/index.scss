@@ -14,12 +14,20 @@ body,
 	height: 100%;
 }
 body {
-	background: var(--bg);
+	background-color: var(--bg);
 	color: var(--fg);
 	margin: 0;
-	transition:
-		background 0.2s ease,
-		color 0.2s ease;
+	transition: color 0.2s ease;
+}
+
+body::before {
+	content: '';
+	position: fixed;
+	inset: 0;
+	z-index: -1;
+	background:
+		radial-gradient(circle at top, var(--accent-soft), transparent 26%),
+		linear-gradient(180deg, var(--bg), var(--bg-alt));
 }
 
 * {

@@ -9,7 +9,7 @@
 	position: relative;
 	overflow: hidden;
 	border: 1px solid var(--border-strong);
-	border-radius: 28px;
+	border-radius: var(--radius-lg);
 	padding: 2rem;
 	background:
 		radial-gradient(circle at top left, var(--accent-soft), transparent 34%),
@@ -38,10 +38,10 @@
 }
 
 .console-hero__title {
-	font-size: clamp(2rem, 4vw, 3.5rem);
-	line-height: 0.95;
+	font-size: clamp(1.6rem, 2.8vw, 2.4rem);
+	line-height: 1.1;
 	margin: 0;
-	max-width: 11ch;
+	max-width: 22ch;
 }
 
 .console-hero__copy {
@@ -62,7 +62,7 @@
 	grid-column: span 12;
 	background: var(--panel);
 	border: 1px solid var(--border);
-	border-radius: 24px;
+	border-radius: var(--card-radius);
 	padding: 1.25rem;
 	box-shadow: var(--shadow-sm);
 }
@@ -110,7 +110,7 @@
 
 .console-kpi {
 	border: 1px solid var(--border);
-	border-radius: 20px;
+	border-radius: var(--card-radius);
 	padding: 1rem;
 	background: var(--panel-strong);
 }
@@ -139,9 +139,24 @@
 .console-table,
 .console-item-card {
 	border: 1px solid var(--border);
-	border-radius: 18px;
+	border-radius: var(--card-radius);
 	padding: 1rem;
 	background: var(--panel-strong);
+	color: inherit;
+	font: inherit;
+}
+
+.console-environment {
+	text-align: left;
+	width: 100%;
+	cursor: pointer;
+	transition:
+		border-color 0.2s ease,
+		background 0.2s ease;
+}
+
+.console-environment:hover {
+	border-color: var(--border-strong);
 }
 
 .console-table {
@@ -188,15 +203,15 @@
 }
 
 .console-pill--low {
-	color: #0a7a47;
+	color: var(--severity-low);
 }
 
 .console-pill--medium {
-	color: #9a5d00;
+	color: var(--severity-medium);
 }
 
 .console-pill--high {
-	color: #b02020;
+	color: var(--severity-high);
 }
 
 .console-code,
@@ -205,7 +220,7 @@
 .console-select {
 	width: 100%;
 	border: 1px solid var(--border);
-	border-radius: 16px;
+	border-radius: var(--radius-md);
 	background: var(--panel-strong);
 	color: var(--fg);
 	padding: 0.85rem 1rem;
@@ -272,7 +287,7 @@
 
 .console-button {
 	border: 0;
-	border-radius: 16px;
+	border-radius: var(--radius-md);
 	padding: 0.82rem 1.1rem;
 	font: inherit;
 	font-weight: 600;
@@ -288,20 +303,20 @@
 }
 
 .console-button--primary {
-	background: var(--accent);
-	color: #fff;
+	background: var(--btn-primary-bg);
+	color: var(--btn-primary-fg);
 	box-shadow: var(--shadow-sm);
 }
 
 .console-button--secondary {
-	background: var(--panel-strong);
-	color: var(--fg);
+	background: var(--btn-secondary-bg);
+	color: var(--btn-secondary-fg);
 	border: 1px solid var(--border);
 }
 
 .console-button--danger {
 	background: var(--danger);
-	color: #fff;
+	color: var(--btn-primary-fg);
 }
 
 .console-button--ghost {
@@ -319,7 +334,7 @@
 
 .console-empty,
 .console-feedback {
-	border-radius: 18px;
+	border-radius: var(--card-radius);
 	padding: 1rem;
 	background: var(--panel-strong);
 	border: 1px dashed var(--border);
@@ -356,7 +371,7 @@
 .console-decoded {
 	margin-top: 0.85rem;
 	padding: 0.75rem;
-	border-radius: 14px;
+	border-radius: var(--radius-md);
 	border: 1px solid var(--border);
 	background: color-mix(in srgb, var(--accent-soft) 35%, var(--panel-strong));
 }

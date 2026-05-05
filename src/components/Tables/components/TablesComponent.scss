@@ -8,8 +8,8 @@
 .tables-panel {
 	background: var(--panel);
 	border: 1px solid var(--border);
-	border-radius: 20px;
-	padding: 1rem;
+	border-radius: var(--card-radius);
+	padding: 1.25rem;
 	box-shadow: var(--shadow-sm);
 }
 
@@ -39,7 +39,7 @@
 
 	&:hover:not(:disabled) {
 		background: var(--accent);
-		color: #fff;
+		color: var(--btn-primary-fg);
 		border-color: var(--accent);
 	}
 
@@ -91,7 +91,7 @@
 .tables-code {
 	width: 100%;
 	border: 1px solid var(--border);
-	border-radius: 14px;
+	border-radius: var(--radius-md);
 	background: var(--panel-strong);
 	color: var(--fg);
 	padding: 0.72rem 0.85rem;
@@ -115,7 +115,7 @@
 .tables-filter__input {
 	flex: 1;
 	border: 1px solid var(--border);
-	border-radius: 14px;
+	border-radius: var(--radius-md);
 	background: var(--panel-strong);
 	color: var(--fg);
 	padding: 0.52rem 0.85rem;
@@ -242,7 +242,7 @@
 
 .tables-add-attr-panel {
 	border: 1px solid var(--border);
-	border-radius: 14px;
+	border-radius: var(--radius-md);
 	padding: 0.85rem;
 	margin-bottom: 0.75rem;
 	background: var(--panel-strong);
@@ -287,7 +287,7 @@
 
 .tables-item-card {
 	border: 1px solid var(--border);
-	border-radius: 15px;
+	border-radius: var(--card-radius);
 	padding: 0.7rem;
 	background: var(--panel-strong);
 	cursor: pointer;
@@ -385,7 +385,7 @@
 
 .tables-button {
 	border: 1px solid var(--border);
-	border-radius: 12px;
+	border-radius: var(--radius-md);
 	padding: 0.5rem 0.82rem;
 	font: inherit;
 	font-size: 0.88rem;
@@ -417,7 +417,7 @@
 	align-items: center;
 	gap: 0.5rem;
 	padding: 0.55rem 0.85rem;
-	border-radius: 12px;
+	border-radius: var(--radius-md);
 	background: color-mix(in srgb, var(--danger) 10%, var(--panel-strong));
 	border: 1px solid color-mix(in srgb, var(--danger) 28%, var(--border));
 	color: color-mix(in srgb, var(--danger) 80%, var(--fg));
@@ -432,15 +432,15 @@
 }
 
 .tables-button--primary {
-	background: var(--accent);
+	background: var(--btn-primary-bg);
 	border-color: color-mix(in srgb, var(--accent) 75%, var(--border));
-	color: #fff;
+	color: var(--btn-primary-fg);
 }
 
 .tables-button--danger {
 	background: color-mix(in srgb, var(--danger) 88%, #fff 0%);
 	border-color: color-mix(in srgb, var(--danger) 50%, var(--border));
-	color: #fff;
+	color: var(--btn-primary-fg);
 }
 
 .tables-code,
@@ -484,7 +484,7 @@
 .tables-empty,
 .tables-feedback {
 	margin-top: 0.75rem;
-	border-radius: 14px;
+	border-radius: var(--radius-md);
 	padding: 0.72rem 0.82rem;
 	background: var(--panel-strong);
 	border: 1px dashed var(--border);
@@ -517,7 +517,7 @@
 .tables-decoded {
 	margin-top: 0.62rem;
 	padding: 0.62rem;
-	border-radius: 12px;
+	border-radius: var(--radius-md);
 	border: 1px solid var(--border);
 	background: color-mix(in srgb, var(--accent-soft) 35%, var(--panel-strong));
 }
@@ -545,7 +545,7 @@
 .tables-modal-overlay {
 	position: fixed;
 	inset: 0;
-	background: rgba(2, 9, 17, 0.62);
+	background: var(--overlay-bg);
 	backdrop-filter: blur(2px);
 	display: grid;
 	place-items: center;
@@ -557,7 +557,7 @@
 	width: min(760px, 94vw);
 	background: var(--panel);
 	border: 1px solid var(--border);
-	border-radius: 16px;
+	border-radius: var(--card-radius);
 	padding: 1rem;
 	box-shadow: var(--shadow-lg);
 	display: grid;

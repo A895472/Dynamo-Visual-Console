@@ -12,7 +12,7 @@
 .converter-tab {
 	border: 0;
 	border-bottom: 2px solid transparent;
-	border-radius: 8px 8px 0 0;
+	border-radius: var(--radius-sm) var(--radius-sm) 0 0;
 	padding: 0.7rem 1.2rem;
 	font: inherit;
 	font-weight: 500;
@@ -53,7 +53,7 @@
 	max-width: 98%;
 	background: var(--panel);
 	border: 1px solid var(--border-strong);
-	border-radius: 14px;
+	border-radius: var(--radius-md);
 	box-shadow: var(--shadow-lg);
 	overflow: hidden;
 	list-style: none;
@@ -67,7 +67,7 @@
 	align-items: center;
 	gap: 0.75rem;
 	padding: 0.55rem 0.9rem;
-	border-radius: 10px;
+	border-radius: var(--radius-sm);
 	cursor: pointer;
 	font-size: 0.88rem;
 	font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace;
@@ -116,26 +116,26 @@
 	line-height: 1.6;
 	background: var(--panel-strong);
 	border: 1px solid var(--border);
-	border-radius: 16px;
+	border-radius: var(--radius-md);
 	padding: 0.85rem 1rem;
 	tab-size: 2;
 	margin: 0;
 }
 
 .json-key {
-	color: #6ea6e0;
+	color: var(--json-key);
 }
 
 .json-string {
-	color: #8acf8a;
+	color: var(--json-string);
 }
 
 .json-number {
-	color: #e0a06e;
+	color: var(--json-number);
 }
 
 .json-bool {
-	color: #c58de0;
+	color: var(--json-bool);
 }
 
 .json-null {
@@ -161,7 +161,7 @@
 	gap: 0.45rem;
 	background: var(--panel-strong);
 	border: 1px solid var(--border);
-	border-radius: 16px;
+	border-radius: var(--card-radius);
 	padding: 1rem;
 	transition: border-color 0.18s ease;
 }

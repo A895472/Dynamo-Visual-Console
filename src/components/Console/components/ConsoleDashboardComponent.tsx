@@ -58,6 +58,7 @@ export default function ConsoleDashboardComponent(props: Props) {
 						) : (
 							displayEnvironments.map(({ id: entry, label }) => {
 								const active = entry === environment
+								const riskKey = entry === 'pro' ? 'pro' : entry === 'pre' ? 'pre' : 'desa'
 								return (
 									<button
 										key={entry}
@@ -67,12 +68,12 @@ export default function ConsoleDashboardComponent(props: Props) {
 										<div className='console-row'>
 											<strong>{label}</strong>
 											<span
-												className={`console-pill console-pill--${entry === 'pro' ? 'high' : entry === 'pre' ? 'medium' : 'low'}`}>
-												{t(`environment.security.${entry}`)}
+												className={`console-pill console-pill--${riskKey === 'pro' ? 'high' : riskKey === 'pre' ? 'medium' : 'low'}`}>
+												{t(`environment.security.${riskKey}`)}
 											</span>
 										</div>
 										<p className='console-panel__subtitle'>
-											{t(`environment.descriptions.${entry}`)}
+											{t(`environment.descriptions.${riskKey}`)}
 										</p>
 									</button>
 								)

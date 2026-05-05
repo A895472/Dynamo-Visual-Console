@@ -2,7 +2,7 @@
 	--csel-radius: 10px;
 	--csel-pad-y: 0.45rem;
 	--csel-pad-x: 0.75rem;
-	--csel-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+	--csel-shadow: var(--shadow-sm);
 
 	--csel-bg: var(--bg);
 	--csel-fg: var(--fg);
@@ -37,7 +37,7 @@
 	cursor: pointer;
 	transition: background 0.2s ease;
 	min-height: 36px;
-	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+	box-shadow: var(--csel-shadow);
 
 	&:hover {
 		background: var(--csel-bg-hover);
