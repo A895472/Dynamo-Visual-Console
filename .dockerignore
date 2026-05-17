@@ -6,3 +6,6 @@ dist
 *.log
 .env*
 !.env.local.example
+.npmrc
+.npm
+.npm-cache
