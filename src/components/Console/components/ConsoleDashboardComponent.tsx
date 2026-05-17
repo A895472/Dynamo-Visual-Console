@@ -13,8 +13,6 @@ interface Props {
 	onOpenTable: (tableName: string) => void
 }
 
-const environments = ['desa', 'pre', 'pro']
-
 export default function ConsoleDashboardComponent(props: Props) {
 	const { environment, availableEnvironments, tables, onChangeEnvironment, onOpenTable } = props
 	const { t } = useTranslation('console')

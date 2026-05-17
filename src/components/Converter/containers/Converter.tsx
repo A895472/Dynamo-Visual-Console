@@ -65,7 +65,9 @@ function saveHistoryEntry(ruleText: string, json: Record<string, unknown>) {
 
 export default function Converter() {
 	const settings = consoleApi.readSettings()
-	const [saveEnvironment, setSaveEnvironment] = useState<TargetEnvironment>(settings.environment)
+	const [saveEnvironment, setSaveEnvironment] = useState<TargetEnvironment>(
+		(settings.environment as TargetEnvironment) || 'desa'
+	)
 	const isReadonly = settings.readonlyEnvironments.includes(saveEnvironment)
 
 	// Tabs
@@ -76,7 +78,7 @@ export default function Converter() {
 	const [currentJson, setCurrentJson] = useState<Record<string, unknown> | null>(null)
 	const [convertError, setConvertError] = useState<ParseErrorInfo | null>(null)
 	const [convertSuccess, setConvertSuccess] = useState('')
-	const textareaRef = useRef<HTMLTextAreaElement>(null)
+	const textareaRef = useRef<HTMLTextAreaElement | null>(null)
 
 	// Autocomplete
 	const [acItems, setAcItems] = useState<KnownField[]>([])

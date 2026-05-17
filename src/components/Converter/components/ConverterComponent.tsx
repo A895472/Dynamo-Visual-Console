@@ -9,6 +9,12 @@ import type { TargetEnvironment } from '@/models/console'
 
 export type Tab = 'converter' | 'import' | 'history'
 
+export interface ParseErrorInfo {
+	message: string
+	line?: number
+	column?: number
+}
+
 export interface KnownField {
 	path: string
 	type: string
@@ -404,7 +410,12 @@ function ConverterTab(props: Props) {
 									</select>
 								</label>
 								<div className='console-label' style={{ justifyContent: 'flex-end' }}>
-									<span title={isReadonly ? 'Entorno en modo lectura. Puedes cambiarlo en Ajustes' : undefined}>
+									<span
+										title={
+											isReadonly
+												? 'Entorno en modo lectura. Puedes cambiarlo en Ajustes'
+												: undefined
+										}>
 										<button
 											type='button'
 											className='console-button console-button--primary'
