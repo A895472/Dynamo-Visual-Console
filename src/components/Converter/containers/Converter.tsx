@@ -109,7 +109,7 @@ export default function Converter() {
 	const [importValidation, setImportValidation] = useState<
 		Array<{ path: string; message: string; valid?: boolean }>
 	>([])
-	const fileInputRef = useRef<HTMLInputElement>(null)
+	const fileInputRef = useRef<HTMLInputElement | null>(null)
 
 	// History
 	const [history, setHistory] = useState<HistoryEntry[]>([])
@@ -136,7 +136,7 @@ export default function Converter() {
 		}
 		try {
 			const ast = parseRule(expression.trim())
-			const json = generateDynamoRule(ast) as Record<string, unknown>
+			const json = generateDynamoRule(ast as unknown) as Record<string, unknown>
 			setCurrentJson(json)
 			saveHistoryEntry(expression.trim(), json)
 			setConvertSuccess('Regla convertida correctamente')
@@ -381,7 +381,7 @@ export default function Converter() {
 			onConvert={convert}
 			onCopyJson={() => currentJson && copyToClipboard(JSON.stringify(currentJson, null, 2))}
 			onDownloadJson={() =>
-				currentJson && downloadJson(currentJson, `${motor.id || 'regla_dynamo'}.json`)
+				currentJson && downloadJson(currentJson as unknown, `${motor.id || 'regla_dynamo'}.json`)
 			}
 			motor={motor}
 			motorJson={motorJson}

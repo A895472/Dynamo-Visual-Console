@@ -10,9 +10,11 @@ import type { TargetEnvironment } from '@/models/console'
 export type Tab = 'converter' | 'import' | 'history'
 
 export interface ParseErrorInfo {
-	message: string
-	line?: number
-	column?: number
+	title: string
+	detail?: string
+	highlight?: string
+	before?: string
+	after?: string
 }
 
 export interface KnownField {
@@ -45,7 +47,7 @@ interface Props {
 	currentJson: Record<string, unknown> | null
 	convertError: ParseErrorInfo | null
 	convertSuccess: string
-	textareaRef: RefObject<HTMLTextAreaElement>
+	textareaRef: RefObject<HTMLTextAreaElement | null>
 	acItems: KnownField[]
 	acIndex: number
 	onExpressionChange: (value: string, cursorPos: number) => void
@@ -77,7 +79,7 @@ interface Props {
 	importError: string
 	importSuccess: string
 	importValidation: Array<{ path: string; message: string; valid?: boolean }>
-	fileInputRef: RefObject<HTMLInputElement>
+	fileInputRef: RefObject<HTMLInputElement | null>
 	onImportInputChange: (value: string) => void
 	onImportConvert: () => void
 	onImportValidate: () => void

@@ -10,7 +10,6 @@ import type {
 import { localParseRule, localReverseRule } from '@/services/converter'
 
 import {
-	clearCredentials,
 	deleteMockItem,
 	listMockItems,
 	listMockTables,
