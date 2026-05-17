@@ -2,12 +2,11 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import type { TargetEnvironment } from '@/models/console'
 import { consoleApi } from '@/services/console/api'
-import { ParseError, parseRule } from '@/services/converter/parser'
 import { generateDynamoRule } from '@/services/converter/generator'
+import { ParseError, parseRule } from '@/services/converter/parser'
 import { dynamoJsonToText } from '@/services/converter/reverser'
 import { validateDynamoSchema } from '@/services/converter/validator'
 
-import ConverterComponent from '../components/ConverterComponent'
 import type {
 	HistoryEntry,
 	KnownField,
@@ -15,6 +14,7 @@ import type {
 	ParseErrorInfo,
 	Tab,
 } from '../components/ConverterComponent'
+import ConverterComponent from '../components/ConverterComponent'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -136,7 +136,8 @@ export default function Converter() {
 		}
 		try {
 			const ast = parseRule(expression.trim())
-			const json = generateDynamoRule(ast as unknown) as Record<string, unknown>
+			const dynamoNode = generateDynamoRule(ast)
+			const json: Record<string, unknown> = dynamoNode as unknown as Record<string, unknown>
 			setCurrentJson(json)
 			saveHistoryEntry(expression.trim(), json)
 			setConvertSuccess('Regla convertida correctamente')
@@ -207,10 +208,10 @@ export default function Converter() {
 		if (acItems.length === 0) return
 		if (e.key === 'ArrowDown') {
 			e.preventDefault()
-			setAcIndex((i) => Math.min(i + 1, acItems.length - 1))
+			setAcIndex((i: number) => Math.min(i + 1, acItems.length - 1))
 		} else if (e.key === 'ArrowUp') {
 			e.preventDefault()
-			setAcIndex((i) => Math.max(i - 1, 0))
+			setAcIndex((i: number) => Math.max(i - 1, 0))
 		} else if ((e.key === 'Enter' || e.key === 'Tab') && acIndex >= 0) {
 			e.preventDefault()
 			selectAutocomplete(acItems[acIndex].path)
@@ -327,7 +328,7 @@ export default function Converter() {
 	}
 
 	const deleteHistoryEntry = (id: number) => {
-		const updated = history.filter((h) => h.id !== id)
+		const updated = history.filter((h: HistoryEntry) => h.id !== id)
 		localStorage.setItem(HISTORY_KEY, JSON.stringify(updated))
 		setHistory(updated)
 	}
@@ -381,7 +382,7 @@ export default function Converter() {
 			onConvert={convert}
 			onCopyJson={() => currentJson && copyToClipboard(JSON.stringify(currentJson, null, 2))}
 			onDownloadJson={() =>
-				currentJson && downloadJson(currentJson as unknown, `${motor.id || 'regla_dynamo'}.json`)
+				currentJson && downloadJson(currentJson, `${motor.id || 'regla_dynamo'}.json`)
 			}
 			motor={motor}
 			motorJson={motorJson}
