@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE: ghcr.io/A895472/dynamo-visual-console
+  IMAGE: ghcr.io/a895472/dynamo-visual-console
 
 jobs:
   build:
