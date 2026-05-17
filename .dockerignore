@@ -9,3 +9,4 @@ dist
 .npmrc
 .npm
 .npm-cache
+package-lock.json

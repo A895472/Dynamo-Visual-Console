@@ -5,8 +5,9 @@ WORKDIR /app
 # Force npm to use public registry
 RUN npm config set registry https://registry.npmjs.org/
 
-COPY package*.json ./
-RUN npm ci --no-audit --no-fund
+COPY package.json ./
+# Delete old lock file to regenerate clean one against public registry
+RUN rm -f package-lock.json && npm install --no-audit --no-fund
 
 COPY . .
 RUN npm run build
