@@ -1,4 +1,4 @@
-import './TablesComponent.scss'
+﻿import './TablesComponent.scss'
 
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -349,7 +349,10 @@ export default function TablesComponent(props: Props) {
 							</div>
 							<div className='tables-structured-fields'>
 								{structuredFields.map((field) => {
-									const isKey =
+								// Solo bloqueamos la clave en modo edición; en new/duplicate el usuario
+								// debe poder cambiar el ID libremente
+								const isKey =
+									editorMode === 'edit' &&
 										selectedItemId !== '__new__' &&
 										(field.key === tableKeys.partitionKey ||
 											(tableKeys.sortKey !== undefined && field.key === tableKeys.sortKey))
@@ -505,24 +508,23 @@ export default function TablesComponent(props: Props) {
 								<div className='tables-feedback tables-feedback--error'>{errorMessage}</div>
 							) : null}
 
-							{editorMode === 'edit' && itemHistory.length > 0 && (
-								<div className='tables-history'>
-									<button
-										type='button'
-										className='tables-history__toggle'
-										onClick={() => setHistoryOpen((prev) => !prev)}>
+							<div className='tables-history'>
+								<button
+									type='button'
+									className='tables-history__toggle'
+									onClick={() => setHistoryOpen((prev) => !prev)}>
 										<span className='tables-history__toggle-icon'>{historyOpen ? '▾' : '▸'}</span>
 										{t('tablesPage.historyTitle', { count: itemHistory.length })}
-									</button>
-									{historyOpen && (
-										<div className='tables-history__list'>
-											{itemHistory.map((entry, idx) => {
+								</button>
+								{historyOpen && (
+									<div className='tables-history__list'>
+										{itemHistory.length === 0 ? (
+											<div className='tables-empty'>{t('tablesPage.historyEmpty')}</div>
+										) : (
+											itemHistory.slice(0, 3).map((entry, idx) => {
 												const date = new Date(entry.savedAt)
 												const dateStr = date.toLocaleDateString()
-												const timeStr = date.toLocaleTimeString([], {
-													hour: '2-digit',
-													minute: '2-digit',
-												})
+												const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 												const labelKey = idx === 0 ? 'historyEntryLatest' : 'historyEntryOld'
 												const label = t(`tablesPage.${labelKey}`, { date: dateStr, time: timeStr })
 												const previewFields = Object.entries(entry.snapshot)
@@ -556,11 +558,11 @@ export default function TablesComponent(props: Props) {
 														)}
 													</div>
 												)
-											})}
-										</div>
-									)}
-								</div>
-							)}
+											})
+										)}
+									</div>
+								)}
+							</div>
 						</>
 					)}
 				</article>

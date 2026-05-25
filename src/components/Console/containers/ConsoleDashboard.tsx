@@ -21,8 +21,9 @@ export function ConsoleDashboard() {
 		? consoleApi.readSettings().customEnvironments.map((e) => ({
 				id: e.id,
 				label: e.label ? `${e.label} (${e.targetEnv})` : `(sin nombre) (${e.targetEnv})`,
+				targetEnv: e.targetEnv,
 			}))
-		: TARGET_ENVIRONMENTS.map((id) => ({ id, label: t(`environment.names.${id}`) }))
+		: TARGET_ENVIRONMENTS.map((id) => ({ id, label: t(`environment.names.${id}`), targetEnv: id }))
 
 	useEffect(() => {
 		const nextSettings = { ...consoleApi.readSettings(), environment }

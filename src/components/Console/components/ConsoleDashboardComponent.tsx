@@ -7,7 +7,7 @@ import type { ConsoleTableSummary } from '@/models/console'
 
 interface Props {
 	environment: string
-	availableEnvironments: { id: string; label: string }[]
+	availableEnvironments: { id: string; label: string; targetEnv?: string }[]
 	tables: ConsoleTableSummary[]
 	onChangeEnvironment: (environment: string) => void
 	onOpenTable: (tableName: string) => void
@@ -20,7 +20,6 @@ export default function ConsoleDashboardComponent(props: Props) {
 	// En remoto usamos solo los entornos configurados; en local, el array completo
 	const displayEnvironments = availableEnvironments.length > 0 ? availableEnvironments : []
 
-	const protectedTables = tables.filter((table) => table.riskLevel !== 'low').length
 	const totalItems = tables.reduce((count, table) => count + table.itemCount, 0)
 
 	return (
@@ -54,9 +53,11 @@ export default function ConsoleDashboardComponent(props: Props) {
 								cada entorno que quieras usar.
 							</div>
 						) : (
-							displayEnvironments.map(({ id: entry, label }) => {
-								const active = entry === environment
-								const riskKey = entry === 'pro' ? 'pro' : entry === 'pre' ? 'pre' : 'desa'
+						displayEnvironments.map(({ id: entry, label, targetEnv }) => {
+							const active = entry === environment
+							// En modo remoto el ID es un UUID; usamos targetEnv para el nivel de riesgo
+							const riskEnv = targetEnv ?? entry
+							const riskKey = riskEnv === 'pro' ? 'pro' : riskEnv === 'pre' ? 'pre' : 'desa'
 								return (
 									<button
 										key={entry}
@@ -96,10 +97,7 @@ export default function ConsoleDashboardComponent(props: Props) {
 							<div className='console-kpi__label'>{t('summary.items')}</div>
 							<div className='console-kpi__value'>{totalItems}</div>
 						</div>
-						<div className='console-kpi'>
-							<div className='console-kpi__label'>{t('summary.protected')}</div>
-							<div className='console-kpi__value'>{protectedTables}</div>
-						</div>
+
 					</div>
 				</article>
 

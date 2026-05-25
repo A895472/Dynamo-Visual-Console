@@ -91,6 +91,7 @@
 		"sortKeyTooltip": "Sort key (SK) — cannot be modified",
 		"historyTitle": "Change history ({{count}} saved version)",
 		"historyTitle_other": "Change history ({{count}} saved versions)",
+		"historyEmpty": "No saved changes yet for this item.",
 		"historyEntryLatest": "Most recent — {{date}} {{time}}",
 		"historyEntryOld": "Older — {{date}} {{time}}",
 		"historyRestore": "Restore"

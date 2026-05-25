@@ -9,7 +9,10 @@
 "pre": "vite --mode pre",
 "build": "tsc -b && vite build --mode prod","build:server": "tsc --project tsconfig.server.json",
 "start": "node dist-server/index.js","lint": "eslint .",
-"preview": "vite preview"
+"preview": "vite preview",
+"cy:open": "cypress open",
+"cy:run": "cypress run",
+"cy:run:chrome": "cypress run --browser chrome"
 },
 "dependencies": {"@aws-sdk/client-dynamodb": "^3.1032.0",
 "@aws-sdk/lib-dynamodb": "^3.1032.0","i18next": "^25.3.6",
@@ -28,6 +31,7 @@
 "@typescript-eslint/eslint-plugin": "^8.39.1",
 "@typescript-eslint/parser": "^8.39.1",
 "@vitejs/plugin-react": "^5.0.0",
+"cypress": "^14.0.0",
 "dotenv": "^17.4.2",
 "eslint": "^9.33.0",
 "eslint-config-prettier": "^10.1.8",

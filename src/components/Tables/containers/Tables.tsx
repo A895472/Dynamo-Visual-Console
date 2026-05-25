@@ -166,8 +166,6 @@ export function Tables() {
 
 	useEffect(() => {
 		setIsLoadingTables(true)
-		const nextSettings = { ...consoleApi.readSettings(), environment }
-		consoleApi.writeSettings(nextSettings)
 		void consoleApi
 			.listTables(environment)
 			.then((nextTables) => {
@@ -196,8 +194,6 @@ export function Tables() {
 		}
 
 		setIsLoadingItems(true)
-		const nextSettings = { ...consoleApi.readSettings(), defaultTableName: selectedTableName }
-		consoleApi.writeSettings(nextSettings)
 		setDecodedValue('')
 		setDecodedItemId('')
 		void consoleApi
@@ -361,13 +357,29 @@ export function Tables() {
 			return
 		}
 
-		if (!confirmMutation(environment, 'Guardar item en DynamoDB')) {
-			return
-		}
-
 		const parsed = parseEditorItem()
 		if (!parsed) {
 			setErrorMessage('El JSON final no es valido. Corrigelo antes de guardar.')
+			return
+		}
+
+		// Validaciones para items nuevos o duplicados
+		if (editorMode === 'new' || editorMode === 'duplicate') {
+			const newId = String(parsed[tableKeys.partitionKey] ?? '').trim()
+			if (!newId) {
+				setErrorMessage(`El campo "${tableKeys.partitionKey}" no puede estar vacío.`)
+				return
+			}
+			const existingIds = new Set(items.map((i) => String(i[tableKeys.partitionKey] ?? '')))
+			if (existingIds.has(newId)) {
+				setErrorMessage(
+					`Ya existe un item con ${tableKeys.partitionKey} = "${newId}". Cambia el ID antes de guardar.`
+				)
+				return
+			}
+		}
+
+		if (!confirmMutation(environment, 'Guardar item en DynamoDB')) {
 			return
 		}
 
@@ -588,7 +600,9 @@ export function Tables() {
 		}
 
 		setEditorValue(JSON.stringify(orderItemForEditor(nextItem, tableKeys.partitionKey), null, 2))
-		if (field === tableKeys.partitionKey) {
+		// Solo actualizamos selectedItemId en modo edición (no en new/duplicate para evitar
+		// que el campo PK se bloquee al escribir)
+		if (field === tableKeys.partitionKey && editorMode === 'edit') {
 			setSelectedItemId(String(nextValue))
 			if (decodedValue) {
 				setDecodedItemId(String(nextValue))

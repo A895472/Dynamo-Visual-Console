@@ -91,6 +91,7 @@
 		"sortKeyTooltip": "Clave de ordenación (SK) — no se puede modificar",
 		"historyTitle": "Historial de cambios ({{count}} versión guardada)",
 		"historyTitle_other": "Historial de cambios ({{count}} versiones guardadas)",
+		"historyEmpty": "Sin cambios guardados aún para este item.",
 		"historyEntryLatest": "Más reciente — {{date}} {{time}}",
 		"historyEntryOld": "Anterior — {{date}} {{time}}",
 		"historyRestore": "Restaurar"
