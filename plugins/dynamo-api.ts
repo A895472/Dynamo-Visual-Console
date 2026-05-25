@@ -152,13 +152,22 @@ async function handleListTables(environment: string, req: IncomingMessage, res: 
 async function handleListItems(
 	environment: string,
 	tableName: string,
-	limit: number,
 	req: IncomingMessage,
 	res: ServerResponse
 ) {
 	const doc = getDocClient(environment, req)
-	const result = await doc.send(new ScanCommand({ TableName: tableName, Limit: limit }))
-	sendJson(res, 200, result.Items ?? [])
+	const items: Record<string, unknown>[] = []
+	let lastKey: Record<string, unknown> | undefined
+
+	do {
+		const result = await doc.send(
+			new ScanCommand({ TableName: tableName, ExclusiveStartKey: lastKey })
+		)
+		items.push(...(result.Items ?? []))
+		lastKey = result.LastEvaluatedKey as Record<string, unknown> | undefined
+	} while (lastKey)
+
+	sendJson(res, 200, items)
 }
 
 async function handleSaveItem(
@@ -230,11 +239,7 @@ export function dynamoApiPlugin(): Plugin {
 						if (itemsMatch) {
 							const tableName = decodeURIComponent(itemsMatch[1])
 							if (req.method === 'GET') {
-								const limit = Math.min(
-									200,
-									Math.max(1, Number(url.searchParams.get('limit') ?? '50'))
-								)
-								await handleListItems(environment, tableName, limit, req, res)
+								await handleListItems(environment, tableName, req, res)
 								return
 							}
 							if (req.method === 'PUT') {
